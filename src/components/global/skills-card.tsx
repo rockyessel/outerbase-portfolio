@@ -6,7 +6,6 @@ interface Props {
 }
 
 const SkillsCard: React.FC<Props> = (props): JSX.Element => {
-  console.log('skills', props.toolLists);
   return (
     <ul className='rounded-md py-2 text-xl flex flex-wrap gap-2 items-center'>
       {toolSkills?.map((list, index) =>

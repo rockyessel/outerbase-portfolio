@@ -81,7 +81,6 @@ export const getAllProjects = async () => {
 }
 
 export const CommonPathProps = async ( table:string) => {
-  
   try {
     const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/data/slug?table=${table}`)
   return data
@@ -94,9 +93,18 @@ export const CommonPathProps = async ( table:string) => {
 
 
 export const getDataBySlug = async (table:string, slug:string) => {
-  
   try {
     const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/table/slug?table=${table}&slug=${slug}`)
+  return data
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+
+};
+export const getAllArticles = async () => {
+  try {
+    const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/artices`)
   return data
   } catch (error) {
     console.log(error)

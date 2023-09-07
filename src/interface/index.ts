@@ -113,8 +113,33 @@ export interface ProjectItem {
   live_url: string;
   main_image: string;
   name: string;
-  other_image: string[];
+  other_image: string;
   project_type: string;
   source_code: string;
   tags: string;
+}
+
+export interface ArticleResponse {
+  success: boolean;
+  response: {
+    count: number;
+    items: ArticleItem[];
+  };
+}
+
+export interface ArticleItem {
+  comments_count: number;
+  content: string;
+  created_at: string;
+  description: string;
+  id: number;
+  image: string;
+  is_published: number;
+  keyword: string;
+  likes_count: number;
+  publication_date: string;
+  slug: string;
+  tags: string;
+  title: string;
+  views_count: number;
 }

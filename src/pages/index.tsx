@@ -7,10 +7,7 @@ import { defaultMetaData } from '@/utils/services';
 import ContactSection from '@/components/global/contact-section';
 import ProjectSection from '@/components/projects/project-section';
 
-const Home = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) => {
-  console.log(props);
+const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <Layout {...defaultMetaData}>
       <main className='w-full h-full flex flex-col gap-20 px-4 lg:px-14 xl:px-20 2xl:px-40 lg:container md:mx-auto pb-5'>
@@ -24,18 +21,12 @@ const Home = (
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps<{
-  main_content_hero: ApiResponse;
-  sideProjects: ProjectResponse;
-  professionalProjects: ProjectResponse
-}> = async () => {
+export const getServerSideProps: GetServerSideProps<{ main_content_hero: ApiResponse, sideProjects: ProjectResponse, professionalProjects: ProjectResponse }> = async () => {
   const main_content_hero: ApiResponse = await getMainContentHero();
   const sideProjects: ProjectResponse = await getAllSideProjects();
   const professionalProjects: ProjectResponse = await getAllProfessionalProjects();
-
-  if (!main_content_hero || !sideProjects || !professionalProjects)
+  if (!main_content_hero || !sideProjects.response || !professionalProjects)
     return { notFound: true };
-
   return {
     props: JSON.parse(
       JSON.stringify({ main_content_hero, sideProjects, professionalProjects })

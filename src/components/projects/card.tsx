@@ -12,20 +12,13 @@ interface Props {
 }
 
 const ProjectCard = (props: Props) => {
-  console.log(props);
   const tools = props.data?.tags?.split(',').map((tool) => tool.trim());
   const MAX_TITLE: number = 70;
   const MAX_DESCRIPTION: number = 200;
-
-  const sliceDes: string = `${props.data?.short_description?.slice(
-    0,
-    MAX_DESCRIPTION
-  )}...`;
+  const sliceDes: string = `${props.data?.short_description?.slice(0, MAX_DESCRIPTION)}...`;
   const sliceTitle: string = `${props.data?.name?.slice(0, MAX_TITLE)}...`;
-
   const isTitleLonger: boolean = props.data?.name?.length > MAX_TITLE;
-  const isDesLonger: boolean =
-    props.data?.short_description?.length > MAX_DESCRIPTION;
+  const isDesLonger: boolean = props.data?.short_description?.length > MAX_DESCRIPTION;
 
   return (
     
