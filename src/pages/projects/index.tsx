@@ -12,7 +12,7 @@ const ProjectsPage = (
 ) => {
   return (
     <Layout description={''} title={''} image={''} type={''} alt={''} keywords={''} publishedAt={''} updatedAt={''} MIME={''} author_name={''}>
-      <main className='w-full h-full flex flex-col gap-10 px-4 lg:px-14 xl:px-20 2xl:px-40 lg:container md:mx-auto pb-5 mt-5 md:mt-28'>
+      <main className='w-full h-full flex flex-col gap-10 px-4 lg:px-14 xl:px-20 2xl:px-40 py-2  pb-5 mt-5 md:mt-28'>
         <div>
           <p className='font-bold text-5xl md:text-7xl capitalize'>
             Just saying...

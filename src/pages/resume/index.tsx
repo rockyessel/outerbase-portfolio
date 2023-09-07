@@ -2,8 +2,8 @@ import React from 'react'
 
 interface Props {}
 
-const index = () => {
+const ResumePage = () => {
   return <div></div>
 }
 
-export default index
+export default ResumePage

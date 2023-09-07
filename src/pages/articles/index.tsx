@@ -8,7 +8,7 @@ interface Props {}
 
 const ArticlesPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
   return (
-    <main className='w-full h-full flex flex-col gap-10 px-4 lg:px-14 xl:px-20 2xl:px-40 lg:container md:mx-auto pb-5 mt-5 md:mt-28'>
+    <main className='w-full h-full flex flex-col gap-10 px-4 lg:px-14 xl:px-20 2xl:px-40 py-2 pb-5 mt-5 md:mt-28'>
       <div>
         <p className='font-bold text-5xl md:text-7xl capitalize'>
           Information to share
@@ -23,7 +23,7 @@ const ArticlesPage = (props: InferGetServerSidePropsType<typeof getStaticProps>)
 
       <ul className='grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-8 md:gap-2.5 overflow-hidden'>
         {props.articles?.response?.items?.map((article, index) => (
-          <ArticleCard key={index}  data={article} />
+          <ArticleCard key={index} data={article} />
         ))}
       </ul>
     </main>

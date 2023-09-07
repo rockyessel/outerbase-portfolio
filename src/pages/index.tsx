@@ -10,7 +10,7 @@ import ProjectSection from '@/components/projects/project-section';
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <Layout {...defaultMetaData}>
-      <main className='w-full h-full flex flex-col gap-20 px-4 lg:px-14 xl:px-20 2xl:px-40 lg:container md:mx-auto pb-5'>
+      <main className='w-full h-full flex flex-col gap-20 px-4 lg:px-14 xl:px-20 2xl:px-40 pb-5'>
         <Hero data={props?.main_content_hero?.response?.items[0]} />
         <ProjectSection sideProjects={props.sideProjects?.response?.items} professionalProjects={props.professionalProjects?.response?.items} />
         <ContactSection data={props?.main_content_hero?.response?.items[0]} />

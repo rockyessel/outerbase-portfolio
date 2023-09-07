@@ -16,7 +16,7 @@ const ArticleDetailedPage = (
 ) => {
   const [hasIncremented, setHasIncremented] = React.useState<boolean>(false);
   return (
-    <main className='max_screen:w-full max_screen:px-4 px-4 xl:w-[70rem] mx-auto mt-5 md:mt-28'>
+    <main className=' px-4 lg:px-14 xl:px-20 2xl:px-40 py-2 '>
       <ArticleHeader data={props.articleData.response.items[0]} />
       <ArticleDetailedCard data={props.articleData.response.items[0]} />
     </main>
