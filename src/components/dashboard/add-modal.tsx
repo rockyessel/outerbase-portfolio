@@ -52,7 +52,7 @@ function ImportModal() {
           <div className='bg-[#0e141b] text-white font-moldyen p-8 rounded-lg z-10 w-[50rem]'>
             <form className='w-full'>
               <fieldset>
-                <p className='w-full text-lg'>Add Project</p>
+                <p className='w-full text-lg'>Create Article</p>
               </fieldset>
 
 
@@ -177,6 +177,8 @@ function ImportModal() {
               </fieldset>
             </form>
           </div>
+
+          <button onClick={closeModal}>Close</button>
         </div>
       )}
     </div>
