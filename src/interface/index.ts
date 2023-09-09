@@ -143,3 +143,17 @@ export interface ArticleItem {
   title: string;
   views_count: number;
 }
+
+
+export interface Block {
+  id: string;
+  type: string;
+  data: {
+    text: string;
+  };
+}
+
+export interface EditorData {
+  time: number;
+  blocks: Block[];
+}

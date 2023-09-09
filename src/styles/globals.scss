@@ -60,6 +60,21 @@ td {
   text-align: center;
 }
 
+.overwrite-sticky {
+  overflow-y: auto !important;
+}
+
+.prose :where(.prose > :first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-top: 0;
+    color: white;
+}
+
+.ce-inline-toolbar--left-oriented.ce-inline-toolbar--showed {
+    -webkit-transform: translateX(-23px);
+    transform: translate(-23px);
+    color: black;
+}
+
 .li {
   text-decoration: none;
   position: relative;
@@ -122,4 +137,29 @@ td {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+
+.ce-paragraph{
+  a {
+    color: rgb(135, 207, 255)
+  }
+
+}
+
+.ce-toolbar__plus{
+  color: white
+}
+
+.ce-toolbar__plus:hover {
+background-color: #881338;
+
+}
+
+.cdx-search-field__input{
+color:black
+}
+
+ .link-tool > a > .link-tool__description{
+  color:rgba(0,0,0,0.7)
 }
