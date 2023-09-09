@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { Block } from '@/interface';
+import { EditorDataProps } from '@/interface';
 
 const Output = dynamic(
   async () => (await import('editorjs-react-renderer')).default,
@@ -9,7 +9,7 @@ const Output = dynamic(
 );
 
 interface EditorOutputProps {
-  content: Block;
+  content: EditorDataProps;
 }
 
 function CustomImageRenderer({ data }: any) {

@@ -1,11 +1,15 @@
-import EditorJS from '@editorjs/editorjs';
+import EditorJS, { OutputData } from '@editorjs/editorjs';
 import React from 'react';
 
-import { useRouter } from 'next/router';
+interface Props {
+  set: React.Dispatch<React.SetStateAction<OutputData | undefined>>;
+  value: OutputData | undefined;
+  handleSubmission: ()=> void
+}
 
-const TextEditor = () => {
+const TextEditor = ({ value, set }: Props) => {
   const ref = React.useRef<EditorJS>();
-  const [editorContent, setEditorContent] = React.useState<string>('');
+
   const [isMounted, setIsMounted] = React.useState<boolean>(false);
 
   const initializeEditor = React.useCallback(async () => {
@@ -72,31 +76,9 @@ const TextEditor = () => {
   }, []);
 
   React.useEffect(() => {
-    // Function to auto-expand the textarea
-    function autoExpandTextarea(event: React.ChangeEvent<HTMLTextAreaElement>) {
-      const textarea = event.target;
-      textarea.style.height = 'auto'; // Reset height to auto
-      textarea.style.height = textarea.scrollHeight + 'px'; // Set height to match content
-    }
-
-    // Query for elements with the "cdx-input" class and attach the auto-expand function
-    const textareas = document.querySelectorAll('.cdx-input textarea');
-    textareas.forEach((textarea) =>
-      textarea.addEventListener('input', autoExpandTextarea)
-    );
-
-    // Clean up event listeners when the component unmounts
-    return () => {
-      textareas.forEach((textarea) =>
-        textarea.removeEventListener('input', autoExpandTextarea)
-      );
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const init = async () => await initializeEditor();
+    const Show = async () => await initializeEditor();
     if (isMounted) {
-      init();
+      Show();
       return () => {
         ref.current?.destroy();
         ref.current = undefined;
@@ -104,36 +86,20 @@ const TextEditor = () => {
     }
   }, [isMounted, initializeEditor]);
 
-
-  // Function to get the editor content and update state
-  const getEditorContent = async () => {
-    const content = await ref.current?.save();
-    setEditorContent(content);
-  };
-
-
-
-  console.log('editorContent: ', editorContent);
-
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsMounted(true);
     }
   }, []);
 
-  async function onSubmit() {
-    const blocks = await ref.current?.save();
-    console.log('blocks', blocks);
-    getEditorContent();
-  }
-
-  if (!isMounted) {
-    return null;
-  }
+  const handleSubmission = async () => {
+    const content = await ref.current?.save();
+    set(content);
+  };
 
   return (
     <div className='w-full p-4 rounded-lg  text-white'>
-      <form >
+      <form>
         <div className=' article prose prose-headings:text-rose-800 prose-p:text-white prose-gray'>
           <article id='editor' className='' />
           <p className='text-sm'>
@@ -145,10 +111,10 @@ const TextEditor = () => {
           </p>
         </div>
       </form>
-      <button onClick={onSubmit} >Save</button>
+      <button onClick={handleSubmission}>Save</button>
       <div>
         <h2>Editor Content</h2>
-        <pre>{JSON.stringify(editorContent, null, 2)}</pre>
+        <pre>{JSON.stringify(value, null, 2)}</pre>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { OutputData } from '@editorjs/editorjs';
 import axios from 'axios'
 
 
@@ -70,6 +71,7 @@ export const getAllProfessionalProjects = async () => {
     return error
   }
 }
+
 export const getAllProjects = async () => {
   try {
     const { data } = await axios.get('https://light-gold.cmd.outerbase.io/projects/all')
@@ -88,7 +90,6 @@ export const CommonPathProps = async ( table:string) => {
     console.log(error)
     return error
   }
-
 };
 
 
@@ -110,5 +111,31 @@ export const getAllArticles = async () => {
     console.log(error)
     return error
   }
-
 };
+
+
+
+export const createOrUpdateAbout = async (content: OutputData) => {
+  try {
+    const { data } = await axios.post(`https://light-gold.cmd.outerbase.io/dev/create`, {data: content})
+  return data
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+};
+
+
+
+
+export const getImageURL = async (file: File) => {
+  try {
+
+    const formData  = new FormData()
+    
+  } catch (error) {
+    console.log(error)
+    return error
+    
+  }
+}
