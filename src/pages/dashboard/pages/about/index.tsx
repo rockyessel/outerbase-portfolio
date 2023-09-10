@@ -4,25 +4,14 @@ import DashboardLayout from '@/components/dashboard/layout';
 import { createOrUpdateContent, getContent } from '@/utils/api-request';
 import { OutputData } from '@editorjs/editorjs';
 import React from 'react';
+import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 
-interface Props {}
-
-const DashboardAboutPage = () => {
+const DashboardAboutPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
   const [textEditorContentAbout, setTextEditorContentAbout] = React.useState<OutputData>();
-  const [editorContent, setEditorContent] = React.useState<OutputData>()
-
-
-  React.useEffect(() => {
-    getContent().then((data) => setEditorContent(data));
-  },[])
-
-
-
-console.log('editorContent', editorContent);
 
   const handleSaveContent = async () => {
     if (textEditorContentAbout) {
-      await createOrUpdateContent(1,textEditorContentAbout);
+      await createOrUpdateContent(1,textEditorContentAbout,'public.about_dev');
     }
   };
 
@@ -46,7 +35,7 @@ console.log('editorContent', editorContent);
         </div>
       </div>
       <TextEditor
-        oldContent={editorContent}
+        oldContent={props.aboutData}
         value={textEditorContentAbout}
         set={setTextEditorContentAbout}
       />
@@ -55,3 +44,11 @@ console.log('editorContent', editorContent);
 };
 
 export default DashboardAboutPage;
+export const getStaticProps: GetStaticProps<{ aboutData: OutputData }> = async () => {
+  const aboutData = await getContent('public.about_dev', 1);
+  if (!aboutData) return { notFound: true };
+  return {
+    props: { aboutData: JSON.parse(JSON.stringify(aboutData)) },
+    revalidate: 5,
+  };
+};

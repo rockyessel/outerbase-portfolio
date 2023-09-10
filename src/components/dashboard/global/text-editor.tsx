@@ -1,4 +1,4 @@
-import { getContent, getImageURL } from '@/utils/api-request';
+import { getImageURL } from '@/utils/api-request';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 import React from 'react';
 

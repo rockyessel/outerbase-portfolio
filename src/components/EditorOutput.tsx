@@ -47,8 +47,8 @@ const style = {
 const EditorOutput = ({ content }: Props) => {
   return (
     <Output
-      style={style}
-      className='text-sm'
+      // style={style}
+      className='prose-xl'
       renderers={renderers}
       data={content}
     />

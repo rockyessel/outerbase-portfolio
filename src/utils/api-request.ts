@@ -123,10 +123,10 @@ export const getAllArticles = async () => {
     return error;
   }
 };
-const updateContent = async (content: string) => {
+const updateContent = async (table:string, content: string, id:number) => {
   try {
     const response = await fetch(
-      'https://minimum-aqua.cmd.outerbase.io/content/update',
+      `https://minimum-aqua.cmd.outerbase.io/content/update?table=${table}&id=${id}`,
       {
         method: 'PUT',
         headers: {
@@ -143,10 +143,10 @@ const updateContent = async (content: string) => {
     console.log();
   }
 };
-const createContent = async (content: string) => {
+const createContent = async (table:string, content: string, id:number) => {
   try {
     const response = await fetch(
-      'https://minimum-aqua.cmd.outerbase.io/content/create',
+      `https://minimum-aqua.cmd.outerbase.io/content/create?table=${table}&id=${id}`,
       {
         method: 'POST',
         headers: {
@@ -166,10 +166,10 @@ const createContent = async (content: string) => {
   }
 };
 
-const contentIdChecker = async (contentId: number) => {
+const contentIdChecker = async (table:string, contentId: number) => {
   try {
     const { data } = await axios.get<ContentCheckerProps>(
-      `https://minimum-aqua.cmd.outerbase.io/content/check?id=${contentId}`
+      `https://minimum-aqua.cmd.outerbase.io/content/check?table=${table}&id=${contentId}`
     );
     return data.response.items[0].exists;
   } catch (error) {
@@ -177,20 +177,19 @@ const contentIdChecker = async (contentId: number) => {
   }
 };
 
-export const createOrUpdateContent = async (contentId: number, content: OutputData) => {
-  const isContentIdPresent = await contentIdChecker(contentId);
+export const createOrUpdateContent = async (contentId: number, content: OutputData, table:string) => {
+  const isContentIdPresent = await contentIdChecker(table, contentId);
   const stringifyContent = JSON.stringify({ ...content });
-  
   if (typeof isContentIdPresent === 'boolean' && isContentIdPresent) {
-    return await updateContent(stringifyContent);
+    return await updateContent(table, stringifyContent, contentId);
   } else {
-    return await createContent(stringifyContent);
+    return await createContent(table, stringifyContent, contentId);
   }
 };
 
-export const getContent = async (): Promise<OutputData | undefined> => {
+export const getContent = async (table:string, id:number): Promise<OutputData | undefined> => {
   try {
-    const { data } = await axios.get<EditorContentOutputProps>('https://minimum-aqua.cmd.outerbase.io/content/');
+    const { data } = await axios.get<EditorContentOutputProps>(`https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`);
     if (data.success) {
       const doesContentExist = data.response.items[0]?.editorcontentoutput;
       if (doesContentExist) {
