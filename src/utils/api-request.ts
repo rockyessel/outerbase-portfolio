@@ -1,6 +1,7 @@
+import { ContentCheckerProps, EditorContentOutputProps } from '@/interface';
 import { OutputData } from '@editorjs/editorjs';
-import axios from 'axios'
-
+import axios from 'axios';
+import { escapeDoubleQuotes } from './function';
 
 export const SendContactForm = async (data: any) => {
   try {
@@ -42,100 +43,191 @@ export const AddComment = async (commentObj: any) => {
   }
 };
 
-
-
 export const getMainContentHero = async () => {
   try {
-    const { data } = await axios.get('https://light-gold.cmd.outerbase.io/main')
-  return data
+    const { data } = await axios.get(
+      'https://light-gold.cmd.outerbase.io/main'
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
-}
+};
 export const getAllSideProjects = async () => {
   try {
-    const { data } = await axios.get('https://light-gold.cmd.outerbase.io/projects/side-project')
-  return data
+    const { data } = await axios.get(
+      'https://light-gold.cmd.outerbase.io/projects/side-project'
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
-}
+};
 export const getAllProfessionalProjects = async () => {
   try {
-    const { data } = await axios.get('https://light-gold.cmd.outerbase.io/projects/prefessional')
-  return data
+    const { data } = await axios.get(
+      'https://light-gold.cmd.outerbase.io/projects/prefessional'
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
-}
+};
 
 export const getAllProjects = async () => {
   try {
-    const { data } = await axios.get('https://light-gold.cmd.outerbase.io/projects/all')
-  return data
+    const { data } = await axios.get(
+      'https://light-gold.cmd.outerbase.io/projects/all'
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
-  }
-}
-
-export const CommonPathProps = async ( table:string) => {
-  try {
-    const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/data/slug?table=${table}`)
-  return data
-  } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
 };
 
-
-export const getDataBySlug = async (table:string, slug:string) => {
+export const CommonPathProps = async (table: string) => {
   try {
-    const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/table/slug?table=${table}&slug=${slug}`)
-  return data
+    const { data } = await axios.get(
+      `https://light-gold.cmd.outerbase.io/data/slug?table=${table}`
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
+};
 
+export const getDataBySlug = async (table: string, slug: string) => {
+  try {
+    const { data } = await axios.get(
+      `https://light-gold.cmd.outerbase.io/table/slug?table=${table}&slug=${slug}`
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 export const getAllArticles = async () => {
   try {
-    const { data } = await axios.get(`https://light-gold.cmd.outerbase.io/artices`)
-  return data
+    const { data } = await axios.get(
+      `https://light-gold.cmd.outerbase.io/artices`
+    );
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log(error);
+    return error;
   }
 };
-
-
-
-export const createOrUpdateAbout = async (content: OutputData) => {
+const updateContent = async (content: string) => {
   try {
-    const { data } = await axios.post(`https://light-gold.cmd.outerbase.io/dev/create`, {data: content})
-  return data
+    const response = await fetch(
+      'https://minimum-aqua.cmd.outerbase.io/content/update',
+      {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: content,
+      }
+    );
+
+    const data = response.json();
+    console.log(data);
+    return data;
   } catch (error) {
-    console.log(error)
-    return error
+    console.log();
+  }
+};
+const createContent = async (content: string) => {
+  try {
+    const response = await fetch(
+      'https://minimum-aqua.cmd.outerbase.io/content/create',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: content,
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
 };
 
+const contentIdChecker = async (contentId: number) => {
+  try {
+    const { data } = await axios.get<ContentCheckerProps>(
+      `https://minimum-aqua.cmd.outerbase.io/content/check?id=${contentId}`
+    );
+    return data.response.items[0].exists;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+export const createOrUpdateContent = async (contentId: number, content: OutputData) => {
+  const isContentIdPresent = await contentIdChecker(contentId);
+  const stringifyContent = JSON.stringify({ ...content });
+  
+  if (typeof isContentIdPresent === 'boolean' && isContentIdPresent) {
+    return await updateContent(stringifyContent);
+  } else {
+    return await createContent(stringifyContent);
+  }
+};
+
+export const getContent = async (): Promise<OutputData | undefined> => {
+  try {
+    const { data } = await axios.get<EditorContentOutputProps>('https://minimum-aqua.cmd.outerbase.io/content/');
+    if (data.success) {
+      const doesContentExist = data.response.items[0]?.editorcontentoutput;
+      if (doesContentExist) {
+        const content = JSON.parse(doesContentExist) as OutputData;     
+        console.log('content', content);
+        if (content) {
+          return content;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching content:', error);
+  }
+  return undefined; 
+};
 
 
 export const getImageURL = async (file: File) => {
+  console.log(file)
   try {
+    const formData = new FormData();
+    formData.append('file', file);
 
-    const formData  = new FormData()
-    
+    const response = await axios.post<{ url: string }>(
+      `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log('response.data.url',response.data.url)
+    return response.data.url;
   } catch (error) {
-    console.log(error)
-    return error
-    
+    console.error('Error uploading image:', error);
+    throw error
   }
-}
+};

@@ -159,17 +159,25 @@ export interface EditorDataProps {
   blocks: Block[];
 }
 
-export type SuccessfulResponse<T> = {
-  data: T;
-  error?: never;
-  statusCode?: number;
-};
-export type UnsuccessfulResponse<E> = {
-  data?: never;
-  error: E;
-  statusCode?: number;
-};
+export interface ContentCheckerProps {
+  success: boolean;
+  response: {
+    items: {
+      exists: boolean;
+    }[];
+    schema: boolean;
+  };
+}
 
-export type ApiResponseHTTP<T, E = unknown> =
-  | SuccessfulResponse<T>
-  | UnsuccessfulResponse<E>;
+
+export interface EditorContentProps {
+  editorcontentoutput: string;
+}
+
+export interface EditorContentOutputProps {
+  success: boolean;
+  response: {
+    items: EditorContentProps[];
+    schema: boolean;
+  };
+}

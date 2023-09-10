@@ -16,3 +16,13 @@ export const AbbrevNumber = (value: number): string => {
     return f + suffixes[suffixNum];
   }
 };
+
+export const escapeDoubleQuotes = (jsonData: string): string => {
+  console.log('jsonData: ', jsonData);
+  // Use regular expressions to replace double quotes with escaped double quotes
+  const re = jsonData.replace(/"/g, '\\"');
+
+  console.log('Changed: ', re);
+
+  return re;
+};

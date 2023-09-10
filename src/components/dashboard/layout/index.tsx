@@ -12,7 +12,7 @@ const DashboardLayout = (props: Props) => {
       <Navbar />
       <section className='w-full flex'>
         <Sidebar />
-        <section className='w-full h-[90vh] overwrite-sticky flex-1 p-4'>
+        <section className='relative w-full h-[90vh] overwrite-sticky flex-1 px-4'>
           {props.children}
         </section>
       </section>
