@@ -1,7 +1,32 @@
 import { ContentCheckerProps, EditorContentOutputProps } from '@/interface';
 import { OutputData } from '@editorjs/editorjs';
 import axios from 'axios';
-import { escapeDoubleQuotes } from './function';
+import serialize from 'serialize-javascript';
+
+
+function deserialize(serializedJavascript: string) {
+    try {
+        return eval('(' + serializedJavascript + ')') 
+    } catch (error) {
+        console.error('Error deserializing data:', error);
+        return undefined;
+    }
+}
+
+function correctJSONSyntax(jsonString:string) {
+  // Add code here to correct common JSON syntax issues
+  // For example, you can use regular expressions to find and fix issues
+
+  // Example: Correct unescaped double quotes
+  jsonString = jsonString.replace(/([^"])":/g, '$1":"');
+
+  // Example: Add missing commas between properties
+  jsonString = jsonString.replace(/}([^"])/g, '},$1');
+
+  // More corrections can be added as needed
+
+  return jsonString;
+}
 
 export const SendContactForm = async (data: any) => {
   try {
@@ -179,11 +204,14 @@ const contentIdChecker = async (table:string, contentId: number) => {
 
 export const createOrUpdateContent = async (contentId: number, content: OutputData, table:string) => {
   const isContentIdPresent = await contentIdChecker(table, contentId);
-  const stringifyContent = JSON.stringify({ ...content });
+  const serializedData  =  serialize({ ...content })
+  // console.log('serializedData ',serializedData )
+  const base64 = encodeObjectToBase64(serializedData);
+  // console.log('base64 ',base64 )
   if (typeof isContentIdPresent === 'boolean' && isContentIdPresent) {
-    return await updateContent(table, stringifyContent, contentId);
+    return await updateContent(table, base64 , contentId);
   } else {
-    return await createContent(table, stringifyContent, contentId);
+    return await createContent(table, base64 , contentId);
   }
 };
 
@@ -192,9 +220,12 @@ export const getContent = async (table:string, id:number): Promise<OutputData | 
     const { data } = await axios.get<EditorContentOutputProps>(`https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`);
     if (data.success) {
       const doesContentExist = data.response.items[0]?.editorcontentoutput;
+      // console.log('doesContentExist', doesContentExist);
       if (doesContentExist) {
-        const content = JSON.parse(doesContentExist) as OutputData;     
-        console.log('content', content);
+        const json = decodeBase64ToObject(doesContentExist);
+        const content = deserialize(json); 
+        // console.log('content', content);
+        // console.log('json', json);
         if (content) {
           return content;
         }
@@ -230,3 +261,27 @@ export const getImageURL = async (file: File) => {
     throw error
   }
 };
+
+
+
+// Encode a JavaScript object as Base64
+function encodeObjectToBase64(obj:any) {
+  const json = JSON.stringify(obj);
+  const utf8Bytes = new TextEncoder().encode(json);
+  const utf8Array = Array.from(utf8Bytes);
+
+  const base64 = btoa(String.fromCharCode.apply(null, utf8Array));
+  return base64;
+}
+
+// Decode a Base64-encoded string back to a JavaScript object
+function decodeBase64ToObject(base64:string) {
+  const binaryString = atob(base64);
+  const utf8Bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    utf8Bytes[i] = binaryString.charCodeAt(i);
+  }
+  const json = new TextDecoder().decode(utf8Bytes);
+  const obj = JSON.parse(json);
+  return obj;
+}

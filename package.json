@@ -33,6 +33,7 @@
     "editorjs-react-renderer": "^3.5.1",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
+    "flatted": "^3.2.7",
     "moment": "^2.29.4",
     "next": "13.4.19",
     "nextjs-progressbar": "^0.0.16",
@@ -45,7 +46,11 @@
     "react-icons": "^4.11.0",
     "rough-notation": "^0.5.1",
     "sass": "^1.66.1",
+    "serialize-javascript": "^6.0.1",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "@types/serialize-javascript": "^5.0.2"
   }
 }

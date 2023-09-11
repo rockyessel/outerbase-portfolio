@@ -6,6 +6,7 @@ const nextConfig = {
       'esselr.vercel.app',
       'hackernoon.imgix.net',
       'images.unsplash.com',
+      'cdn.sanity.io',
     ],
   },
 };

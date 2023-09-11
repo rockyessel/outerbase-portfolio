@@ -2,14 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 @layer components {
   .typography {
-    @apply prose-2xl prose-headings:text-rose-800 prose-p:text-white prose-gray
+    @apply prose-2xl prose-headings:text-rose-800 prose-p:text-white prose-gray;
   }
-
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
@@ -180,4 +176,8 @@ td {
 
 .ce-block {
   width: 100% !important;
+}
+
+.overflow {
+  overflow-y: visible !important;
 }

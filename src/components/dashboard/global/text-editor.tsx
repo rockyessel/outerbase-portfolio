@@ -113,8 +113,8 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
   }, [value, set]);
 
   return (
-    <div className='w-full px-4 rounded-lg mt-0 pt-0 text-white relative'>
-      <div className='article w-full prose-2xl prose-headings:text-rose-800 prose-p:text-white prose-gray'>
+    <div className='w-full px-4 mt-0 pt-0 text-white relative'>
+      <div className='article w-full typography'>
         <article id='editor' />
       </div>
     </div>
