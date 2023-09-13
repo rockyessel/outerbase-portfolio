@@ -1,4 +1,4 @@
-import ImportModal from '@/components/dashboard/add-modal';
+import ModalWrapper from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/articles/table';
 import React from 'react';
@@ -8,6 +8,8 @@ import { IoMdArrowForward } from 'react-icons/io';
 import { ArticleResponse } from '@/interface';
 import { getAllArticles } from '@/utils/api-request';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
+import TextEditor from '@/components/dashboard/global/text-editor';
+import SeoDrawer from '@/components/dashboard/global/seo-drawer';
 
 interface Props {}
 
@@ -45,7 +47,18 @@ const DashboardArticles = (
             </div>
 
             <div className='flex items-center mt-4 gap-x-3'>
-              <ImportModal />
+              <ModalWrapper buttonName='Create Article'>
+                <form className='w-full h-screen overflow-y-auto flex-1'>
+                  <TextEditor
+                    oldContent={undefined}
+                    value={undefined}
+                    set={undefined}
+                  />
+                </form>
+                <div className='overflow overflow-y-scroll'>
+                  <SeoDrawer />
+                </div>
+              </ModalWrapper>
             </div>
           </div>
 

@@ -3,7 +3,6 @@ import React from 'react';
 const SeoDrawer = () => {
   const [showSEODrawer, setShowSEODrawer] = React.useState(false);
 
-  console.log('showSEODrawer', showSEODrawer);
   return (
     <>
       {showSEODrawer === true ? null : (
@@ -19,8 +18,8 @@ const SeoDrawer = () => {
       )}
       {/* <!-- drawer component --> */}
       {showSEODrawer === true && (
-        <aside claasName='h-screen'>
-          <section className='overflow-y-auto h-[90vh] overflow overflow-auto overflow-y-scroll flex flex-col gap-5'>
+        <aside className='w-[25rem] sticky top-0 right-0'>
+          <section className=''>
             <button
               className='flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
               type='button'

@@ -1,4 +1,4 @@
-import ImportModal from '@/components/dashboard/add-modal';
+import ImportModal from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/projects/table';
 import React from 'react';

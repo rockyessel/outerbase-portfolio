@@ -71,7 +71,7 @@ export const AddComment = async (commentObj: any) => {
 export const getMainContentHero = async () => {
   try {
     const { data } = await axios.get(
-      'https://light-gold.cmd.outerbase.io/main'
+      'https://minimum-aqua.cmd.outerbase.io/components/main-hero'
     );
     return data;
   } catch (error) {
@@ -284,4 +284,18 @@ function decodeBase64ToObject(base64:string) {
   const json = new TextDecoder().decode(utf8Bytes);
   const obj = JSON.parse(json);
   return obj;
+}
+
+
+export const createArticle = async (articleData:any) => {
+
+  try {
+    const { data } = await axios.post(
+      `https://minimum-aqua.cmd.outerbase.io/article/create`,
+      { ...articleData }
+    );
+    return data.response.items[0].exists;
+  } catch (error) {
+    console.log(error);
+  }
 }

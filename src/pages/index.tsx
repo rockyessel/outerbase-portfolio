@@ -8,6 +8,7 @@ import ContactSection from '@/components/global/contact-section';
 import ProjectSection from '@/components/projects/project-section';
 
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  console.log(props)
   return (
     <Layout {...defaultMetaData}>
       <main className='w-full h-full flex flex-col gap-20 px-4 lg:px-14 xl:px-20 2xl:px-40 pb-5'>
