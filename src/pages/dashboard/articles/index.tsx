@@ -6,7 +6,11 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { MdArrowBack } from 'react-icons/md';
 import { IoMdArrowForward } from 'react-icons/io';
 import { ArticleResponse } from '@/interface';
-import { createArticle, encodeObjectToBase64, getAllArticles } from '@/utils/api-request';
+import {
+  createArticle,
+  encodeObjectToBase64,
+  getAllArticles,
+} from '@/utils/api-request';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 import TextEditor from '@/components/dashboard/global/text-editor';
 import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
@@ -23,6 +27,8 @@ export interface ArticleMetaDataProps {
   slug: string;
   description: string;
   publication_date: string;
+  id: number;
+  is_published: boolean;
 }
 
 export const initialMetaDataValues = {
@@ -34,6 +40,8 @@ export const initialMetaDataValues = {
   slug: '',
   description: '',
   publication_date: '',
+  id: Number(),
+  is_published: false,
 };
 
 const DashboardArticles = (
@@ -53,15 +61,12 @@ const DashboardArticles = (
     setLoading(false);
   }, []);
 
-
-   const [metaDataDrawerRef, setMetaDataDrawerRef] = React.useState<RefObject<any> | null>(null); // Define the type for the ref
-
-  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setArticleMetaData((data) => ({
       ...data,
-      [event.target.name]:event.target.value
-   })) 
-  }
+      [event.target.name]: event.target.value,
+    }));
+  };
 
   const tablesHeaders = [
     'Title',
@@ -73,26 +78,32 @@ const DashboardArticles = (
     '',
   ];
 
-  const handleSubmission = async () => {
+  const handleSubmission = async (type: string) => {
     if (articleContent && articleMetaData) {
       const serializedArticleContent = serialize(articleContent);
-      const data = articleMetaData.content = encodeObjectToBase64(serializedArticleContent)
+      const data = (articleMetaData.content = encodeObjectToBase64(
+        serializedArticleContent
+      ));
       console.log('data', data);
       console.log('articleMetaData: ', articleMetaData);
+    }
 
-      // Make sure there's no empty string inn articleContent
-      const ifThereIsData = true
-      if (ifThereIsData) createArticle(articleMetaData);
-      
+    // Make sure there's no empty string inn articleContent
+    const ifThereIsData = true;
+
+    switch (type) {
+      case 'draft':
+        if (ifThereIsData) createArticle(articleMetaData);
+        break;
+      case 'publish':
+        articleMetaData.is_published = true;
+        if (ifThereIsData) createArticle(articleMetaData);
+        break;
+
+      default:
+        break;
     }
   };
-
-   const getDataFromMetaDataDrawer = () => {
-     if (metaDataDrawerRef && metaDataDrawerRef.current) {
-       return metaDataDrawerRef.current.getAllData();
-     }
-     return {}; // Return an empty object or handle the case where MetaDataDrawer is not mounted
-   };
 
   return (
     <DashboardLayout>
@@ -111,30 +122,34 @@ const DashboardArticles = (
             <div className='flex items-center mt-4 gap-x-3'>
               <ModalWrapper buttonName='Create Article'>
                 <MetaDataDrawer
-                  setMetaDataDrawerRef={metaDataDrawerRef}
-                  // set={setArticleMetaData}
+                  set={setArticleMetaData}
                   // value={articleMetaData}
                   setShowMetaDataDrawer={setShowMetaDataDrawer}
                   showMetaDataDrawer={showMetaDataDrawer}
                 />
 
-                <form className='w-full h-screen overflow-y-auto'>
+                <section className='w-full h-screen overflow-y-auto'>
                   <TextEditor
                     oldContent={undefined}
                     value={articleContent}
                     set={setArticleContent}
                   />
-                </form>
+                </section>
 
-                <button
-                  onClick={() => {
-                    const metaData = getDataFromMetaDataDrawer();
-                    // Now you have all the data from MetaDataDrawer in the metaData object
-                    console.log('MetaData:', metaData);
-                  }}
-                >
-                  Get Data from MetaDataDrawer
-                </button>
+                <section className='px-4 py-2'>
+                  <button
+                    type='submit'
+                    onClick={() => handleSubmission('draft')}
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    type='submit'
+                    onClick={() => handleSubmission('publish')}
+                  >
+                    Publish Article
+                  </button>
+                </section>
               </ModalWrapper>
             </div>
           </div>

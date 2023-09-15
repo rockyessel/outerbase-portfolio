@@ -104,7 +104,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
           console.error('Error saving editor content:', error);
         }
       }
-    }, 1000000);
+    }, 1000);
 
     return () => {
       clearInterval(intervalId);

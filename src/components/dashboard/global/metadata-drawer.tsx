@@ -6,9 +6,7 @@ import React, { RefObject } from 'react';
 interface Props {
   showMetaDataDrawer: boolean;
   setShowMetaDataDrawer: React.Dispatch<React.SetStateAction<boolean>>;
-  // set: React.Dispatch<React.SetStateAction<ArticleMetaDataProps | undefined>>;
-  // value: any;
-  setMetaDataDrawerRef: (ref: RefObject<any>) => void;
+  set: React.Dispatch<React.SetStateAction<ArticleMetaDataProps>>;
 }
 
 const MetaDataDrawer = (props: Props) => {
@@ -23,36 +21,6 @@ const MetaDataDrawer = (props: Props) => {
   const [titleValue, setTitleValue] = React.useState<string>('');
   const [keywords, setKeywords] = React.useState<string>('');
   const [tagsInString, setTagsInString] = React.useState<string>('');
-  const metaDataDrawerRef = React.useRef<any>(null);
-
-  // console.log('props.value: ', props.value);
-
-  // Function to gather all the data from the component
-  const getAllData = () => {
-    console.log('titleValue:', titleValue);
-    console.log('imageURL:', imageURL);
-    console.log('totalTags:', totalTags);
-    console.log('dateAndTimeValue:', dateAndTimeValue);
-    console.log('descriptionValue:', descriptionValue);
-    console.log('slugValue:', slugValue);
-
-    return {
-      title: titleValue,
-      image: imageURL,
-      tags: totalTags,
-      publication_date: dateAndTimeValue,
-      description: descriptionValue,
-      slug: slugValue,
-      // Add more fields as needed
-    };
-  };
-
-  // Pass the ref back to the parent component
-  if (metaDataDrawerRef.current) {
-    props.setMetaDataDrawerRef(metaDataDrawerRef);
-  }
-
-  // Rest of your component JSX here
 
   const handleRemoveTag = (tagValue: string) => {
     const removedTags = totalTags.filter((tag) => tag !== tagValue);
@@ -88,19 +56,20 @@ const MetaDataDrawer = (props: Props) => {
   const updateParentState = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const data = {
+    const data: ArticleMetaDataProps = {
       title: titleValue,
       image: imageURL,
       tags: tagsInString,
       publication_date: dateAndTimeValue,
       description: descriptionValue,
       slug: slugValue,
-      keywords,
-      // Add more fields as needed
+      keyword: keywords,
+      content: '',
+      id: new Date().getMilliseconds(),
+      is_published:false,
     };
 
-    console.log('data: ', data);
-    console.log('imageURL: ', imageURL);
+    props.set(data);
   };
 
   React.useEffect(() => {

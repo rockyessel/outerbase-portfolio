@@ -270,6 +270,7 @@ export const decodeBase64ToObject = (base64: string) => {
 
 export const createArticle = async (articleData: any) => {
   try {
+    console.log('createArticle',{ ...articleData });
     const { data } = await axios.post(
       `https://minimum-aqua.cmd.outerbase.io/article/create`,
       { ...articleData }
