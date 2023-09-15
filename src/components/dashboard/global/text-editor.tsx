@@ -55,7 +55,6 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
               uploader: {
                 async uploadByFile(file: File) {
                   const imageURL = await getImageURL(file);
-
                   return {
                     success: 1,
                     file: {
@@ -105,7 +104,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
           console.error('Error saving editor content:', error);
         }
       }
-    }, 10000);
+    }, 1000000);
 
     return () => {
       clearInterval(intervalId);
@@ -114,7 +113,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
 
   return (
     <div className='w-full px-4 mt-0 pt-0 text-white relative'>
-      <div className='article w-full typography'>
+      <div className='typography'>
         <article id='editor' />
       </div>
     </div>

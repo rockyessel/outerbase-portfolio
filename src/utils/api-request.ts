@@ -3,29 +3,13 @@ import { OutputData } from '@editorjs/editorjs';
 import axios from 'axios';
 import serialize from 'serialize-javascript';
 
-
-function deserialize(serializedJavascript: string) {
-    try {
-        return eval('(' + serializedJavascript + ')') 
-    } catch (error) {
-        console.error('Error deserializing data:', error);
-        return undefined;
-    }
-}
-
-function correctJSONSyntax(jsonString:string) {
-  // Add code here to correct common JSON syntax issues
-  // For example, you can use regular expressions to find and fix issues
-
-  // Example: Correct unescaped double quotes
-  jsonString = jsonString.replace(/([^"])":/g, '$1":"');
-
-  // Example: Add missing commas between properties
-  jsonString = jsonString.replace(/}([^"])/g, '},$1');
-
-  // More corrections can be added as needed
-
-  return jsonString;
+export const deserialize = (serializedJavascript: string) => {
+  try {
+    return eval('(' + serializedJavascript + ')');
+  } catch (error) {
+    console.error('Error deserializing data:', error);
+    return undefined;
+  }
 }
 
 export const SendContactForm = async (data: any) => {
@@ -148,7 +132,7 @@ export const getAllArticles = async () => {
     return error;
   }
 };
-const updateContent = async (table:string, content: string, id:number) => {
+const updateContent = async (table: string, content: string, id: number) => {
   try {
     const response = await fetch(
       `https://minimum-aqua.cmd.outerbase.io/content/update?table=${table}&id=${id}`,
@@ -168,7 +152,7 @@ const updateContent = async (table:string, content: string, id:number) => {
     console.log();
   }
 };
-const createContent = async (table:string, content: string, id:number) => {
+const createContent = async (table: string, content: string, id: number) => {
   try {
     const response = await fetch(
       `https://minimum-aqua.cmd.outerbase.io/content/create?table=${table}&id=${id}`,
@@ -191,7 +175,7 @@ const createContent = async (table:string, content: string, id:number) => {
   }
 };
 
-const contentIdChecker = async (table:string, contentId: number) => {
+const contentIdChecker = async (table: string, contentId: number) => {
   try {
     const { data } = await axios.get<ContentCheckerProps>(
       `https://minimum-aqua.cmd.outerbase.io/content/check?table=${table}&id=${contentId}`
@@ -202,20 +186,21 @@ const contentIdChecker = async (table:string, contentId: number) => {
   }
 };
 
-export const createOrUpdateContent = async (contentId: number, content: OutputData, table:string) => {
+export const createOrUpdateContent = async (contentId: number, content: OutputData, table: string) => {
   const isContentIdPresent = await contentIdChecker(table, contentId);
-  const serializedData  =  serialize({ ...content })
-  // console.log('serializedData ',serializedData )
+  const serializedData = serialize({ ...content });
   const base64 = encodeObjectToBase64(serializedData);
-  // console.log('base64 ',base64 )
   if (typeof isContentIdPresent === 'boolean' && isContentIdPresent) {
-    return await updateContent(table, base64 , contentId);
+    return await updateContent(table, base64, contentId);
   } else {
-    return await createContent(table, base64 , contentId);
+    return await createContent(table, base64, contentId);
   }
 };
 
-export const getContent = async (table:string, id:number): Promise<OutputData | undefined> => {
+export const getContent = async (
+  table: string,
+  id: number
+): Promise<OutputData | undefined> => {
   try {
     const { data } = await axios.get<EditorContentOutputProps>(`https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`);
     if (data.success) {
@@ -223,7 +208,7 @@ export const getContent = async (table:string, id:number): Promise<OutputData | 
       // console.log('doesContentExist', doesContentExist);
       if (doesContentExist) {
         const json = decodeBase64ToObject(doesContentExist);
-        const content = deserialize(json); 
+        const content = deserialize(json);
         // console.log('content', content);
         // console.log('json', json);
         if (content) {
@@ -234,12 +219,11 @@ export const getContent = async (table:string, id:number): Promise<OutputData | 
   } catch (error) {
     console.error('Error fetching content:', error);
   }
-  return undefined; 
+  return undefined;
 };
 
-
 export const getImageURL = async (file: File) => {
-  console.log(file)
+  console.log(file);
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -254,28 +238,26 @@ export const getImageURL = async (file: File) => {
       }
     );
 
-    console.log('response.data.url',response.data.url)
+    console.log('response.data.url', response.data.url);
     return response.data.url;
   } catch (error) {
     console.error('Error uploading image:', error);
-    throw error
+    throw error;
   }
 };
 
-
-
 // Encode a JavaScript object as Base64
-function encodeObjectToBase64(obj:any) {
+export const encodeObjectToBase64 = (obj: any) => {
   const json = JSON.stringify(obj);
   const utf8Bytes = new TextEncoder().encode(json);
   const utf8Array = Array.from(utf8Bytes);
 
   const base64 = btoa(String.fromCharCode.apply(null, utf8Array));
   return base64;
-}
+};
 
 // Decode a Base64-encoded string back to a JavaScript object
-function decodeBase64ToObject(base64:string) {
+export const decodeBase64ToObject = (base64: string) => {
   const binaryString = atob(base64);
   const utf8Bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
@@ -284,11 +266,9 @@ function decodeBase64ToObject(base64:string) {
   const json = new TextDecoder().decode(utf8Bytes);
   const obj = JSON.parse(json);
   return obj;
-}
+};
 
-
-export const createArticle = async (articleData:any) => {
-
+export const createArticle = async (articleData: any) => {
   try {
     const { data } = await axios.post(
       `https://minimum-aqua.cmd.outerbase.io/article/create`,
@@ -298,4 +278,4 @@ export const createArticle = async (articleData:any) => {
   } catch (error) {
     console.log(error);
   }
-}
+};

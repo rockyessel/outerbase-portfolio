@@ -1,4 +1,4 @@
-import SeoDrawer from '@/components/dashboard/global/seo-drawer';
+import SeoDrawer from '@/components/dashboard/global/metadata-drawer';
 import TextEditor from '@/components/dashboard/global/text-editor';
 import DashboardLayout from '@/components/dashboard/layout';
 import { createOrUpdateContent, getContent } from '@/utils/api-request';
@@ -6,12 +6,19 @@ import { OutputData } from '@editorjs/editorjs';
 import React from 'react';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 
-const DashboardAboutPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
-  const [textEditorContentAbout, setTextEditorContentAbout] = React.useState<OutputData>();
+const DashboardAboutPage = (
+  props: InferGetServerSidePropsType<typeof getStaticProps>
+) => {
+  const [textEditorContentAbout, setTextEditorContentAbout] =
+    React.useState<OutputData>();
 
   const handleSaveContent = async () => {
     if (textEditorContentAbout) {
-      await createOrUpdateContent(1,textEditorContentAbout,'public.about_dev');
+      await createOrUpdateContent(
+        1,
+        textEditorContentAbout,
+        'public.about_dev'
+      );
     }
   };
 
@@ -44,7 +51,9 @@ const DashboardAboutPage = (props: InferGetServerSidePropsType<typeof getStaticP
 };
 
 export default DashboardAboutPage;
-export const getStaticProps: GetStaticProps<{ aboutData: OutputData }> = async () => {
+export const getStaticProps: GetStaticProps<{
+  aboutData: OutputData;
+}> = async () => {
   const aboutData = await getContent('public.about_dev', 1);
   if (!aboutData) return { notFound: true };
   return {

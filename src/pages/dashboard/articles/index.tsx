@@ -1,26 +1,68 @@
 import ModalWrapper from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/articles/table';
-import React from 'react';
+import React, { RefObject } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { MdArrowBack } from 'react-icons/md';
 import { IoMdArrowForward } from 'react-icons/io';
 import { ArticleResponse } from '@/interface';
-import { getAllArticles } from '@/utils/api-request';
+import { createArticle, encodeObjectToBase64, getAllArticles } from '@/utils/api-request';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 import TextEditor from '@/components/dashboard/global/text-editor';
-import SeoDrawer from '@/components/dashboard/global/seo-drawer';
+import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
+import { OutputData } from '@editorjs/editorjs';
+import serialize from 'serialize-javascript';
 
 interface Props {}
+export interface ArticleMetaDataProps {
+  title: string;
+  content: string;
+  image: string;
+  keyword: string;
+  tags: string;
+  slug: string;
+  description: string;
+  publication_date: string;
+}
+
+export const initialMetaDataValues = {
+  title: '',
+  content: '',
+  image: '',
+  keyword: '',
+  tags: '',
+  slug: '',
+  description: '',
+  publication_date: '',
+};
 
 const DashboardArticles = (
   props: InferGetServerSidePropsType<typeof getStaticProps>
 ) => {
-  console.log(props);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] =
+    React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
+
+  const [articleMetaData, setArticleMetaData] =
+    React.useState<ArticleMetaDataProps>(initialMetaDataValues);
+  const [articleContent, setArticleContent] = React.useState<OutputData>();
+
+  console.log('articleMetaData: ', articleMetaData);
+
   React.useEffect(() => {
     setLoading(false);
   }, []);
+
+
+   const [metaDataDrawerRef, setMetaDataDrawerRef] = React.useState<RefObject<any> | null>(null); // Define the type for the ref
+
+  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+    setArticleMetaData((data) => ({
+      ...data,
+      [event.target.name]:event.target.value
+   })) 
+  }
+
   const tablesHeaders = [
     'Title',
     'Status',
@@ -31,6 +73,27 @@ const DashboardArticles = (
     '',
   ];
 
+  const handleSubmission = async () => {
+    if (articleContent && articleMetaData) {
+      const serializedArticleContent = serialize(articleContent);
+      const data = articleMetaData.content = encodeObjectToBase64(serializedArticleContent)
+      console.log('data', data);
+      console.log('articleMetaData: ', articleMetaData);
+
+      // Make sure there's no empty string inn articleContent
+      const ifThereIsData = true
+      if (ifThereIsData) createArticle(articleMetaData);
+      
+    }
+  };
+
+   const getDataFromMetaDataDrawer = () => {
+     if (metaDataDrawerRef && metaDataDrawerRef.current) {
+       return metaDataDrawerRef.current.getAllData();
+     }
+     return {}; // Return an empty object or handle the case where MetaDataDrawer is not mounted
+   };
+
   return (
     <DashboardLayout>
       <div>
@@ -39,7 +102,6 @@ const DashboardArticles = (
             <div>
               <div className='flex items-center gap-x-3'>
                 <h2 className='text-lg font-medium'>Articles</h2>
-
                 <span className='px-3 py-1 text-xs bg-rose-700 rounded-full'>
                   {props.articles?.response?.items?.length} lists
                 </span>
@@ -48,16 +110,31 @@ const DashboardArticles = (
 
             <div className='flex items-center mt-4 gap-x-3'>
               <ModalWrapper buttonName='Create Article'>
-                <form className='w-full h-screen overflow-y-auto flex-1'>
+                <MetaDataDrawer
+                  setMetaDataDrawerRef={metaDataDrawerRef}
+                  // set={setArticleMetaData}
+                  // value={articleMetaData}
+                  setShowMetaDataDrawer={setShowMetaDataDrawer}
+                  showMetaDataDrawer={showMetaDataDrawer}
+                />
+
+                <form className='w-full h-screen overflow-y-auto'>
                   <TextEditor
                     oldContent={undefined}
-                    value={undefined}
-                    set={undefined}
+                    value={articleContent}
+                    set={setArticleContent}
                   />
                 </form>
-                <div className='overflow overflow-y-scroll'>
-                  <SeoDrawer />
-                </div>
+
+                <button
+                  onClick={() => {
+                    const metaData = getDataFromMetaDataDrawer();
+                    // Now you have all the data from MetaDataDrawer in the metaData object
+                    console.log('MetaData:', metaData);
+                  }}
+                >
+                  Get Data from MetaDataDrawer
+                </button>
               </ModalWrapper>
             </div>
           </div>
@@ -134,3 +211,13 @@ export const getStaticProps: GetStaticProps<{
   const articles: ArticleResponse = await getAllArticles();
   return { props: JSON.parse(JSON.stringify({ articles })), revalidate: 10 };
 };
+
+{
+  /* <p className='text-sm'>
+                    Use{' '}
+                    <kbd className='rounded-md border text-white bg-muted px-1 text-xs uppercase'>
+                      Tab
+                    </kbd>{' '}
+                    to open the command menu.
+                  </p> */
+}
