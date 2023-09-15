@@ -61,6 +61,25 @@ const DashboardArticles = (
     setLoading(false);
   }, []);
 
+  const getTextFromEditorContent = (editorContent:OutputData) => {
+    let plainText = '';
+
+    if (editorContent && editorContent.blocks) {
+      editorContent.blocks.forEach((block) => {
+        if (block.type === 'paragraph') {
+          // Append the text from the paragraph block to the plainText string
+          plainText += block.data.text + '\n';
+        } else if (block.type === 'header') {
+          // Append the text from the header block to the plainText string
+          plainText += block.data.text + '\n';
+        }
+        // Add more conditions for other block types if needed
+      });
+    }
+
+    return plainText.trim(); // Remove leading/trailing whitespace
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setArticleMetaData((data) => ({
       ...data,
@@ -86,6 +105,8 @@ const DashboardArticles = (
       ));
       console.log('data', data);
       console.log('articleMetaData: ', articleMetaData);
+      const plainText = getTextFromEditorContent(articleContent);
+      console.log('plainText: ', plainText);
     }
 
     // Make sure there's no empty string inn articleContent
