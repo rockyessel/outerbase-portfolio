@@ -5,10 +5,12 @@ import TextEditor from './global/text-editor';
 import { createOrUpdateContent } from '@/utils/api-request';
 import { OutputData } from '@editorjs/editorjs';
 import SeoDrawer from './global/metadata-drawer';
+import { TfiClose } from 'react-icons/tfi';
 
 interface Props {
   children: React.ReactNode;
-  buttonName: string;
+  buttonName: string | undefined;
+  type: 'create' | 'edit';
 }
 
 const ModalWrapper = (props: Props) => {
@@ -23,7 +25,7 @@ const ModalWrapper = (props: Props) => {
         type='button'
         title='Open Modal'
         onClick={openWrapperModal}
-        className='inline-flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
+        className='inline-flex m-5 items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
       >
         <HiOutlinePlusCircle />
         <span>{props.buttonName}</span>
@@ -38,9 +40,10 @@ const ModalWrapper = (props: Props) => {
             type='button'
             title='Close Modal'
             onClick={closeWrapperModal}
-            className='fixed top-0 right-0 inline-flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
+            className='fixed m-5 top-0 right-0 inline-flex items-center justify-center p-4 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
           >
-            X<span>Close Modal</span>
+            <TfiClose />
+            {/* <span>Close Modal</span> */}
           </button>
         </div>
       )}

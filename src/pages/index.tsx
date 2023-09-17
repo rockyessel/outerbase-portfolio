@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<{ main_content_hero: ApiResp
   const main_content_hero: ApiResponse = await getMainContentHero();
   const sideProjects: ProjectResponse = await getAllSideProjects();
   const professionalProjects: ProjectResponse = await getAllProfessionalProjects();
-  if (!main_content_hero || !sideProjects.response || !professionalProjects)
+  if (!main_content_hero || !sideProjects || !professionalProjects)
     return { notFound: true };
   return {
     props: JSON.parse(

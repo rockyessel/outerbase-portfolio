@@ -1,6 +1,7 @@
 import { getImageURL } from '@/utils/api-request';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 import React from 'react';
+import debounce from 'lodash/debounce';
 
 interface Props {
   set: React.Dispatch<React.SetStateAction<OutputData | undefined>>;
@@ -12,6 +13,20 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
   const editorRef = React.useRef<EditorJS>();
 
   const [isMounted, setIsMounted] = React.useState<boolean>(false);
+
+  // Saving content to our parent component.
+  const saveEditorContent = React.useCallback(async () => {
+    if (editorRef.current) {
+      try {
+        const content = await editorRef.current.save();
+        if (JSON.stringify(content) !== JSON.stringify(value)) {
+          set(content);
+        }
+      } catch (error) {
+        console.error('Error saving editor content:', error);
+      }
+    }
+  }, [set, value]);
 
   const initializeEditor = React.useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
@@ -37,6 +52,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
         onReady() {
           editorRef.current = editor;
         },
+        onChange: () => saveEditorContent(),
         placeholder: 'Am a web developer that...',
         inlineToolbar: true,
         // @ts-expect-error
@@ -53,12 +69,12 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
             class: ImageTool,
             config: {
               uploader: {
-                async uploadByFile(file: File) {
-                  const imageURL = await getImageURL(file);
+                async uploadByFile(files: File[]) {
+                  const imageURL = await getImageURL(files);
                   return {
                     success: 1,
                     file: {
-                      url: imageURL,
+                      url: imageURL[0],
                     },
                   };
                 },
@@ -73,6 +89,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oldContent?.blocks]);
 
   React.useEffect(() => {
@@ -92,28 +109,9 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
     }
   }, []);
 
-  React.useEffect(() => {
-    const intervalId = setInterval(async () => {
-      if (editorRef.current) {
-        try {
-          const content = await editorRef.current.save();
-          if (JSON.stringify(content) !== JSON.stringify(value)) {
-            set(content);
-          }
-        } catch (error) {
-          console.error('Error saving editor content:', error);
-        }
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [value, set]);
-
   return (
     <div className='w-full px-4 mt-0 pt-0 text-white relative'>
-      <div className='typography'>
+      <div className='text-left typography'>
         <article id='editor' />
       </div>
     </div>

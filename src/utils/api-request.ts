@@ -1,4 +1,10 @@
-import { ContentCheckerProps, EditorContentOutputProps } from '@/interface';
+import {
+  ArticleItem,
+  ContentCheckerProps,
+  EditorContentOutputProps,
+  PaginationResponse,
+  SlugResponse,
+} from '@/interface';
 import { OutputData } from '@editorjs/editorjs';
 import axios from 'axios';
 import serialize from 'serialize-javascript';
@@ -10,7 +16,7 @@ export const deserialize = (serializedJavascript: string) => {
     console.error('Error deserializing data:', error);
     return undefined;
   }
-}
+};
 
 export const SendContactForm = async (data: any) => {
   try {
@@ -112,19 +118,19 @@ export const CommonPathProps = async (table: string) => {
 
 export const getDataBySlug = async (table: string, slug: string) => {
   try {
-    const { data } = await axios.get(
-      `https://light-gold.cmd.outerbase.io/table/slug?table=${table}&slug=${slug}`
+    const { data } = await axios.get<SlugResponse>(
+      `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
     );
-    return data;
+    return data.response?.items[0];
   } catch (error) {
     console.log(error);
     return error;
   }
 };
-export const getAllArticles = async () => {
+export const getAllArticles = async (pageOffset: number = 0) => {
   try {
     const { data } = await axios.get(
-      `https://light-gold.cmd.outerbase.io/artices`
+      `https://minimum-aqua.cmd.outerbase.io/articles/all?pageOffset=${pageOffset}`
     );
     return data;
   } catch (error) {
@@ -186,7 +192,11 @@ const contentIdChecker = async (table: string, contentId: number) => {
   }
 };
 
-export const createOrUpdateContent = async (contentId: number, content: OutputData, table: string) => {
+export const createOrUpdateContent = async (
+  contentId: number,
+  content: OutputData,
+  table: string
+) => {
   const isContentIdPresent = await contentIdChecker(table, contentId);
   const serializedData = serialize({ ...content });
   const base64 = encodeObjectToBase64(serializedData);
@@ -202,7 +212,9 @@ export const getContent = async (
   id: number
 ): Promise<OutputData | undefined> => {
   try {
-    const { data } = await axios.get<EditorContentOutputProps>(`https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`);
+    const { data } = await axios.get<EditorContentOutputProps>(
+      `https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`
+    );
     if (data.success) {
       const doesContentExist = data.response.items[0]?.editorcontentoutput;
       // console.log('doesContentExist', doesContentExist);
@@ -222,13 +234,17 @@ export const getContent = async (
   return undefined;
 };
 
-export const getImageURL = async (file: File) => {
-  console.log(file);
+export const getImageURL = async (files: File[]) => {
+  console.log(files);
   try {
     const formData = new FormData();
-    formData.append('file', file);
 
-    const response = await axios.post<{ url: string }>(
+    // Append each file separately
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+
+    const response = await axios.post<{ urls: string[] }>(
       `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}`,
       formData,
       {
@@ -238,10 +254,10 @@ export const getImageURL = async (file: File) => {
       }
     );
 
-    console.log('response.data.url', response.data.url);
-    return response.data.url;
+    console.log('response.data.urls', response.data.urls);
+    return response.data.urls; // Assuming the backend returns an array of URLs for each uploaded file
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Error uploading images:', error);
     throw error;
   }
 };
@@ -265,17 +281,50 @@ export const decodeBase64ToObject = (base64: string) => {
   }
   const json = new TextDecoder().decode(utf8Bytes);
   const obj = JSON.parse(json);
+  console.log('json parsed', obj);
   return obj;
 };
 
-export const createArticle = async (articleData: any) => {
+export const createArticle = async (articleData: ArticleItem) => {
   try {
-    console.log('createArticle',{ ...articleData });
+    console.log('createArticle', { ...articleData });
     const { data } = await axios.post(
       `https://minimum-aqua.cmd.outerbase.io/article/create`,
       { ...articleData }
     );
     return data.response.items[0].exists;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getArticlePagination = async () => {
+  try {
+    const { data } = await axios.get<PaginationResponse>(
+      'https://minimum-aqua.cmd.outerbase.io/pages?table=public.articles'
+    );
+    return data.response.items?.[0].total_pages;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateArticle = async (articleData: ArticleItem, id: string) => {
+  try {
+    const response = await fetch(
+      `https://minimum-aqua.cmd.outerbase.io/article/update?id=${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ ...articleData }),
+      }
+    );
+
+    const data = await response.json();
+
+    return data;
   } catch (error) {
     console.log(error);
   }

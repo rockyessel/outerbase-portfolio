@@ -119,6 +119,13 @@ export interface ProjectItem {
   tags: string;
 }
 
+export interface SlugResponse {
+  success: boolean;
+  response: {
+    count: number;
+    items: ArticleItem[];
+  };
+}
 export interface ArticleResponse {
   success: boolean;
   response: {
@@ -126,23 +133,35 @@ export interface ArticleResponse {
     items: ArticleItem[];
   };
 }
+export interface PaginationResponse {
+  success: boolean;
+  response: {
+    count: number;
+    items: { total_pages: number }[];
+  };
+}
 
 export interface ArticleItem {
-  comments_count: number;
-  content: string;
-  created_at: string;
-  description: string;
-  id: number;
+  id: string;
   image: string;
-  is_published: number;
-  keyword: string;
-  likes_count: number;
-  publication_date: string;
-  slug: string;
-  tags: string;
   title: string;
-  views_count: number;
+  slug: string;
+  description: string;
+  caption: string;
+  content: string;
+  tags: string;
+  keywords: string;
+  publishedDatetime: string;
+  alsoPublishedAt: string;
+  isCommentDisabled: boolean;
+  userId: string;
+  portfolioId?: string;
+  seenCount: number;
+  commentsCount: number;
+  likedCount: number;
+  isPublished: boolean;
 }
+
 
 
 export interface Block {
@@ -168,7 +187,6 @@ export interface ContentCheckerProps {
     schema: boolean;
   };
 }
-
 
 export interface EditorContentProps {
   editorcontentoutput: string;

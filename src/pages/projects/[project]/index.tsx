@@ -22,9 +22,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<{ projectData: ProjectResponse }> = async (context) => {
   const { project }: any = context.params as Params;
   const projectData: ProjectResponse = await getDataBySlug('projects',project);
-  if (projectData.response.count === 0) return { notFound: true };
+  if (!projectData) return { notFound: true };
   return {
     props: { projectData: JSON.parse(JSON.stringify(projectData)) },
-    revalidate: 5,
+    revalidate: 1,
   };
 };

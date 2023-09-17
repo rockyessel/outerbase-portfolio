@@ -11,7 +11,7 @@ interface Props {
 
 const ProjectDetailsCard = (props: Props) => {
   const [image, setImage] = React.useState<number>(0);
-  const tools = props.data?.tags?.split(',')?.map((tool) => tool.trim());
+  const tools = props.data?.tags?.split(',')?.map((tool) => tool.trim().toLocaleLowerCase());
   const images = props.data?.other_image?.split(',')?.map((image) => image.trim());
 
   return (
@@ -38,7 +38,7 @@ const ProjectDetailsCard = (props: Props) => {
           <div>
             <ul className='rounded-md py-2 flex flex-wrap gap-2 items-center'>
               {toolSkills?.map((list, index) =>
-                tools?.includes(list.name) ? (
+                tools?.includes(list.name.toLocaleLowerCase()) ? (
                   <Link
                     key={index}
                     href={`/project/${list.name.toLocaleLowerCase()}`}

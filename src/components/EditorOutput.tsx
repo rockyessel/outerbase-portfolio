@@ -72,7 +72,7 @@ function CustomLinkRenderer({ data }: { data: LinkBlockData }) {
   return (
     <Link
       className='underline'
-      href={data.link}
+      href={`data.link?source=rockyessel`}
       target='_blank'
       rel='noopener noreferrer'
     >

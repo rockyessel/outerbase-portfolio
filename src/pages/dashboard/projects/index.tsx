@@ -1,4 +1,3 @@
-import ImportModal from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/projects/table';
 import React from 'react';
@@ -6,8 +5,19 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { MdArrowBack } from 'react-icons/md';
 import { IoMdArrowForward } from 'react-icons/io';
 import { ProjectResponse } from '@/interface';
-import { getAllProjects } from '@/utils/api-request';
+import {
+  createArticle,
+  encodeObjectToBase64,
+  getAllProjects,
+} from '@/utils/api-request';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
+import ModalWrapper from '@/components/dashboard/modal-wrapper';
+import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
+import TextEditor from '@/components/dashboard/global/text-editor';
+import { ArticleMetaDataProps, initialMetaDataValues } from '../articles';
+import { OutputData } from '@editorjs/editorjs';
+import serializeJavascript from 'serialize-javascript';
+import { getTextFromEditorContent } from '@/utils/function';
 
 interface Props {}
 
@@ -15,11 +25,46 @@ const DashboardProjects = (
   props: InferGetServerSidePropsType<typeof getStaticProps>
 ) => {
   console.log(props);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] =
+    React.useState<boolean>(false);
+  const [projectMetaData, setProjectMetaData] =
+    React.useState<ArticleMetaDataProps>(initialMetaDataValues);
+  const [projectContent, setProjectContent] = React.useState<OutputData>();
+
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
     setLoading(false);
   }, []);
   const tablesHeaders = ['Name', 'Live URL', 'Source Code', 'Tools', ''];
+
+  const handleSubmission = async (type: string) => {
+    if (projectContent && projectMetaData) {
+      const serializedArticleContent = serializeJavascript(projectContent);
+      const data = (projectMetaData.content = encodeObjectToBase64(
+        serializedArticleContent
+      ));
+      console.log('data', data);
+      console.log('projectMetaData: ', projectMetaData);
+      const plainText = getTextFromEditorContent(projectContent);
+      console.log('plainText: ', plainText);
+    }
+
+    // Make sure there's no empty string inn articleContent
+    const ifThereIsData = true;
+
+    switch (type) {
+      case 'draft':
+        if (ifThereIsData) createArticle(projectMetaData);
+        break;
+      case 'publish':
+        projectMetaData.is_published = true;
+        if (ifThereIsData) createArticle(projectMetaData);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -37,7 +82,37 @@ const DashboardProjects = (
             </div>
 
             <div className='flex items-center mt-4 gap-x-3'>
-              <ImportModal />
+              <ModalWrapper buttonName='Add Project'>
+                <MetaDataDrawer
+                  set={setProjectMetaData}
+                  // value={articleMetaData}
+                  setShowMetaDataDrawer={setShowMetaDataDrawer}
+                  showMetaDataDrawer={showMetaDataDrawer}
+                />
+
+                <section className='w-full h-screen overflow-y-auto'>
+                  <TextEditor
+                    oldContent={undefined}
+                    value={projectContent}
+                    set={setProjectContent}
+                  />
+                </section>
+
+                <section className='px-4 py-2'>
+                  <button
+                    type='submit'
+                    onClick={() => handleSubmission('draft')}
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    type='submit'
+                    onClick={() => handleSubmission('publish')}
+                  >
+                    Publish Article
+                  </button>
+                </section>
+              </ModalWrapper>
             </div>
           </div>
 

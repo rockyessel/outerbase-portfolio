@@ -19,7 +19,7 @@ const ArticleDetailedCard = (props:Props) => {
 
             <ShareButton text={props.data?.title} />
             <p className='font-medium inline-flex items-center gap-5 max_screen:text-xs'>
-              <span>{moment(props.data?.publication_date).format('MMM Do YY')}</span>
+              <span>{moment(props.data?.publishedDatetime).format('MMM Do YY')}</span>
               <span>4 Minutes</span>
             </p>
           </div>
