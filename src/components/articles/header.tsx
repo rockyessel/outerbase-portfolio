@@ -14,7 +14,7 @@ interface Props {
 }
 
 const ArticleHeader = (props: Props) => {
-  const viewCount = AbbrevNumber(props.data.views_count);
+  const viewCount = AbbrevNumber(props.data?.seen_count);
   return (
     <div className={`flex gap-2 font-medium max_screen:text-sm text-[1.3rem]`}>
       <Link
@@ -31,7 +31,7 @@ const ArticleHeader = (props: Props) => {
       <div className={`inline-flex items-center rounded-md gap-2`}>
         <AiOutlineFieldTime className={`text-[1.3rem]`} />
         <span>•</span>
-        {moment(props.data?.publication_date).format('LT')}
+        {moment(props.data?.published_datetime).format('LT')}
       </div>
     </div>
   );

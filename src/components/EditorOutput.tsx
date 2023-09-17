@@ -31,7 +31,7 @@ function CustomImageRenderer({ data }: { data: BlockToolData }) {
 
 function CustomCodeRenderer({ data }: { data: BlockToolData }) {
   return (
-    <pre className='bg-gray-800 rounded-md p-4'>
+    <pre className='bg-gray-800 rounded-md p-4 overflow-x-auto'>
       <code className='text-gray-100 text-sm'>{data.code}</code>
     </pre>
   );
@@ -42,7 +42,7 @@ function CustomParagraphRenderer({ data }: { data: BlockToolData }) {
   return <p className='leading-3'>{data.text}</p>;
 }
 
-function CustomListRenderer({ data }: { data: ListBlockData }) {
+function CustomListRenderer({ data }: { data: BlockToolData }) {
   // Render a simple list
   if (data.style === 'unordered') {
     return (

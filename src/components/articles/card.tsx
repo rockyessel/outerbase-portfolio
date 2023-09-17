@@ -13,7 +13,7 @@ interface Props {
 
 const ArticleCard = (props: Props) => {
   const tags = props.data?.tags?.split(',').map((tag) => tag.trim());
-  const viewCount = AbbrevNumber(props.data.views_count);
+  const viewCount = AbbrevNumber(props.data.seen_count);
 
   const MAX_TITLE: number = 70;
   const MAX_DESCRIPTION: number = 157;

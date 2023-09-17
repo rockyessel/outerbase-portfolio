@@ -107,7 +107,7 @@ export const getAllProjects = async () => {
 export const CommonPathProps = async (table: string) => {
   try {
     const { data } = await axios.get(
-      `https://light-gold.cmd.outerbase.io/data/slug?table=${table}`
+      `https://minimum-aqua.cmd.outerbase.io/data/all/slug?table=${table}`
     );
     return data;
   } catch (error) {
@@ -116,17 +116,16 @@ export const CommonPathProps = async (table: string) => {
   }
 };
 
-export const getDataBySlug = async (table: string, slug: string) => {
-  try {
+export const getDataBySlug = async (table: string, slug: string):Promise<ArticleItem> => {
+
     const { data } = await axios.get<SlugResponse>(
       `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
     );
-    return data.response?.items[0];
-  } catch (error) {
-    console.log(error);
-    return error;
+    const article = data.response?.items?.[0];
+
+    return article;
   }
-};
+
 export const getAllArticles = async (pageOffset: number = 0) => {
   try {
     const { data } = await axios.get(
@@ -319,6 +318,27 @@ export const updateArticle = async (articleData: ArticleItem, id: string) => {
           'content-type': 'application/json',
         },
         body: JSON.stringify({ ...articleData }),
+      }
+    );
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createComment = async (comment: ArticleItem, articleId: string) => {
+  try {
+    const response = await fetch(
+      `https://minimum-aqua.cmd.outerbase.io/comments/create?article_id=${articleId}`,
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ ...comment }),
       }
     );
 

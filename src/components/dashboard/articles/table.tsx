@@ -51,23 +51,23 @@ const Table = (props: Props) => {
                 </p>
               </td>
               <td className='px-12 py-4 text-sm text-left font-medium whitespace-nowrap'>
-                {data.isPublished === true ? (
+                {data.is_published === true ? (
                   <p>Published</p>
                 ) : (
                   <p>Not Published</p>
                 )}
               </td>
               <td className='px-12 py-4 text-sm text-left font-medium whitespace-nowrap'>
-                <span> {data.seenCount}</span>
+                <span> {data.seen_count}</span>
               </td>
 
               <td className='px-1 py-1 text-sm text-left whitespace-nowrap'>
                 <span className='inline-flex items-center gap-2'>
-                  {data.isCommentDisabled === true ? 'Yes' : 'No'}
+                  {data.is_comment_disabled === true ? 'Yes' : 'No'}
                 </span>
               </td>
               <td className='px-1 py-1 text-sm text-left whitespace-nowrap'>
-                <span>{data.commentsCount}</span>
+                <span>{data.comments_count}</span>
               </td>
               <td className='px-1 py-1 text-sm text-left whitespace-nowrap'>
                 <AudioBox source='' />

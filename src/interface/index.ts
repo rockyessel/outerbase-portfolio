@@ -73,7 +73,7 @@ interface THOUGHT_ID_PROPS {
 }
 
 export interface Params extends ParsedUrlQuery {
-  articles: string;
+  article: string;
 }
 
 export interface ApiResponse {
@@ -145,24 +145,25 @@ export interface ArticleItem {
   id: string;
   image: string;
   title: string;
+  content: string;
   slug: string;
   description: string;
   caption: string;
-  content: string;
   tags: string;
   keywords: string;
-  publishedDatetime: string;
-  alsoPublishedAt: string;
-  isCommentDisabled: boolean;
-  userId: string;
-  portfolioId?: string;
-  seenCount: number;
-  commentsCount: number;
-  likedCount: number;
-  isPublished: boolean;
+  published_datetime: string;
+  also_published_on: string;
+  is_comment_disabled: boolean;
+  user_id: string;
+  portfolio_id: string;
+  seen_count: number;
+  comments_count: number;
+  liked_count: number;
+  is_published: boolean;
+  word_count: number;
+  character_count: number;
+  reading_minutes: number;
 }
-
-
 
 export interface Block {
   id: string;

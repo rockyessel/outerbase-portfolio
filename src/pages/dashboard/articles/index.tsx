@@ -17,40 +17,29 @@ import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
 import { OutputData } from '@editorjs/editorjs';
 import serialize from 'serialize-javascript';
 import { IdGen, getTextFromEditorContent } from '@/utils/function';
-import Metadata from '@/components/dashboard/global/metadata';
-
-export interface ArticleMetaDataProps {
-  title: string;
-  content: string;
-  image: string;
-  keyword: string;
-  tags: string;
-  slug: string;
-  description: string;
-  publication_date: string;
-  id: number;
-  is_published: boolean;
-}
 
 const init = {
-  id: '', //string
+  id: '',
   image: '',
   title: '',
+  content: '',
   slug: '',
   description: '',
   caption: '',
-  content: '',
   tags: '',
   keywords: '',
-  publishedDatetime: '',
-  alsoPublishedAt: '',
-  isCommentDisabled: false,
-  userId: '',
-  portfolioId: '',
-  seenCount: 0,
-  commentsCount: 0,
-  likedCount: 0,
-  isPublished: false,
+  published_datetime: '',
+  also_published_on: '',
+  is_comment_disabled: false,
+  user_id: '',
+  portfolio_id: '',
+  seen_count: 0,
+  comments_count: 0,
+  liked_count: 0,
+  is_published: false,
+  word_count: 0,
+  character_count: 0,
+  reading_minutes: 1,
 };
 
 const DashboardArticles = () => {
@@ -62,9 +51,6 @@ const DashboardArticles = () => {
   const [activePage, setActivePage] = React.useState<number>(0);
   const [pageNumLimit, setPageNumLimit] = React.useState(1);
   const [articles, setArticles] = React.useState<ArticleResponse>();
-  const [isSearchModalOpen, setSearchModalOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState(''); // State to store the search query
-  const [searchResults, setSearchResults] = React.useState([]); // State to store search results
   const [articleMetaData, setArticleMetaData] =
     React.useState<ArticleItem>(init);
   const [articleContent, setArticleContent] = React.useState<OutputData>();
@@ -100,49 +86,36 @@ const DashboardArticles = () => {
   const handleSubmission = async (type: string) => {
     if (articleContent && articleMetaData) {
       const serializedArticleContent = serialize(articleContent);
-      const data = (articleMetaData.content = encodeObjectToBase64(
-        serializedArticleContent
-      ));
-      console.log('data', data);
-      console.log('articleMetaData: ', articleMetaData);
+      articleMetaData.content = encodeObjectToBase64(serializedArticleContent);
     }
+    const wordsPerMinute = 200;
+    const totalReadingMinutes = Math.ceil(totalWords / wordsPerMinute);
+    articleMetaData.word_count = totalWords;
+    articleMetaData.character_count = totalCharacters;
+    articleMetaData.reading_minutes = totalReadingMinutes;
+    articleMetaData.id = IdGen();
 
     // Make sure there's no empty string inn articleContent
-    const ifThereIsData = true;
+    const isContentAdded = articleMetaData.content.length > 10; // Denoting that content is not empty.;
 
     switch (type) {
       case 'draft':
-        articleMetaData.id = IdGen();
-        if (ifThereIsData) createArticle(articleMetaData);
+        if (isContentAdded) createArticle(articleMetaData);
         console.log('articleMetaData', articleMetaData);
         break;
       case 'publish':
-        articleMetaData.id = IdGen();
-        articleMetaData.isPublished = true;
+        articleMetaData.is_published = true;
         console.log('articleMetaData', articleMetaData);
-        if (ifThereIsData) createArticle(articleMetaData);
+        if (isContentAdded) createArticle(articleMetaData);
         break;
-
       default:
+        console.log('article handleSubmission invalid type.');
         break;
     }
   };
 
-  const handleSearch = () => {
-    // Perform your search logic here, using the searchQuery
-    // Replace the following line with your actual search logic
-    // For example, if you have a list of items in `allItems`, you can filter them based on the searchQuery:
-    const filteredResults = allItems?.filter((item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    if (filteredResults) setSearchResults(filteredResults);
-
-    // Close the modal after performing the search
-    setSearchModalOpen(false);
-  };
-
   const handlePagination = (type: 'next' | 'previous') => {
-    if (type === 'next' && pageNumLimit < totalPages) {
+    if (type === 'next' && pageNumLimit < totalPages!) {
       setActivePage((prevActivePage) => prevActivePage + 10);
       setPageNumLimit((prevPageNumLimit) => prevPageNumLimit + 1);
     } else if (type === 'previous' && pageNumLimit > 1) {
@@ -170,47 +143,13 @@ const DashboardArticles = () => {
     setTotalWords(plainText.split(' ').length);
   }, [articleContent]);
 
-  // Function to reset the search results
-  const resetSearch = () => {
-    setSearchQuery('');
-    setSearchResults([]);
-  };
-
-  const toggleSearchModal = () => {
-    setSearchModalOpen(!isSearchModalOpen);
-  };
-
-  const SearchModal = ({
-    isOpen,
-    onClose,
-  }: {
-    isOpen: boolean;
-    onClose: boolean;
-  }) => {
-    return isOpen ? (
-      <div className='fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
-        <div className='bg-white p-4 rounded-lg'>
-          {/* Your search input and logic go here */}
-          <input
-            type='text'
-            placeholder='Search'
-            // Add your search input props here
-          />
-          <button onClick={onClose}>Close</button>
-        </div>
-      </div>
-    ) : (
-      <p></p>
-    );
-  };
-
   const allItems = articles?.response?.items;
   let filteredItems: ArticleItem[] | undefined = [];
 
   if (view === 'published') {
-    filteredItems = allItems.filter((item) => item.is_published === true);
+    filteredItems = allItems!.filter((item) => item.is_published === true);
   } else if (view === 'unpublished') {
-    filteredItems = allItems?.filter((item) => item.isPublished === false);
+    filteredItems = allItems?.filter((item) => item.is_published === false);
   } else {
     filteredItems = allItems;
   }
@@ -313,10 +252,7 @@ const DashboardArticles = () => {
               </button>
             </div>
 
-            <div
-              onClick={toggleSearchModal}
-              className='relative flex items-center mt-4 md:mt-0'
-            >
+            <div className='relative flex items-center mt-4 md:mt-0'>
               <span className='absolute'>
                 <AiOutlineSearch className='w-5 h-5 mx-3 text-gray-400' />
               </span>
@@ -325,54 +261,6 @@ const DashboardArticles = () => {
                 placeholder='Search'
                 className='block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
               />
-            </div>
-
-            <div>
-              {/* Search Modal */}
-              <SearchModal
-                isOpen={isSearchModalOpen}
-                onClose={toggleSearchModal}
-              >
-                <div className='bg-white p-4 rounded-lg'>
-                  {/* Search input */}
-                  <input
-                    type='text'
-                    placeholder='Search'
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className='block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
-                  />
-
-                  {/* Search button */}
-                  <button
-                    onClick={handleSearch}
-                    className='bg-rose-400 text-white px-3 py-1 rounded-lg mt-2'
-                  >
-                    Search
-                  </button>
-
-                  {/* Reset button */}
-                  <button
-                    onClick={resetSearch}
-                    className='text-gray-600 px-3 py-1 rounded-lg mt-2'
-                  >
-                    Reset
-                  </button>
-
-                  {/* Search results */}
-                  <div className='mt-4'>
-                    {searchResults.map((result) => (
-                      <div
-                        key={result.id}
-                        className='border border-rose-200 p-2 mb-2 rounded-lg'
-                      >
-                        {/* Display your search results here */}
-                        {result.title}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </SearchModal>
             </div>
           </div>
 

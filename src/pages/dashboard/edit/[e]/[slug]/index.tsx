@@ -16,24 +16,27 @@ import React from 'react';
 import serializeJavascript from 'serialize-javascript';
 
 const init = {
-  id: '', //string
+  id: '',
   image: '',
   title: '',
+  content: '',
   slug: '',
   description: '',
   caption: '',
-  content: '',
   tags: '',
   keywords: '',
-  publishedDatetime: '',
-  alsoPublishedAt: '',
-  isCommentDisabled: false,
-  userId: '',
-  portfolioId: '',
-  seenCount: 0,
-  commentsCount: 0,
-  likedCount: 0,
-  isPublished: false,
+  published_datetime: '',
+  also_published_on: '',
+  is_comment_disabled: false,
+  user_id: '',
+  portfolio_id: '',
+  seen_count: 0,
+  comments_count: 0,
+  liked_count: 0,
+  is_published: false,
+  word_count: 0,
+  character_count: 0,
+  reading_minutes: 1,
 };
 
 const EditContentPage = () => {
@@ -61,12 +64,12 @@ const EditContentPage = () => {
 
     switch (type) {
       case 'draft':
-        articleMetaData.isPublished = false;
+        articleMetaData.is_published = false;
         if (isContentAdded) updateArticle(articleMetaData, articleMetaData.id);
         console.log('handleSubmission articleMetaData', handleSubmission);
         break;
       case 'publish':
-        articleMetaData.isPublished = true;
+        articleMetaData.is_published = true;
         console.log('handleSubmission articleMetaData', articleMetaData);
         if (isContentAdded) updateArticle(articleMetaData, articleMetaData.id);
         break;
@@ -82,28 +85,7 @@ const EditContentPage = () => {
       if (content) {
         console.log('content content', content);
         const editContentData = content as any;
-        setArticleMetaData((preArticleMetadata) => ({
-          ...preArticleMetadata,
-          //The returned document is in lowercase
-          commentsCount: editContentData.commentscount,
-          alsoPublishedAt: editContentData.alsopublishedat,
-          isCommentDisabled: editContentData.isCommentdisabled,
-          isPublished: editContentData.ispublished,
-          likedCount: editContentData.likedcount,
-          portfolioId: editContentData.portfolioid,
-          publishedDatetime: editContentData.publisheddatetime,
-          userId: editContentData.userid,
-          caption: editContentData.caption,
-          content: editContentData.content,
-          description: editContentData.description,
-          id: editContentData.id,
-          image: editContentData.image,
-          keywords: editContentData.keywords,
-          seenCount: editContentData.seenCount,
-          slug: editContentData.slug,
-          tags: editContentData.tags,
-          title: editContentData.title,
-        }));
+        setArticleMetaData(content);
         const encodedContent = editContentData.content;
         const decodedContent = decodeBase64ToObject(encodedContent);
         const deserializeContent: OutputData = deserialize(decodedContent);

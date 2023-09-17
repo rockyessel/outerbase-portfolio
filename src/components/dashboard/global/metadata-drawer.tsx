@@ -205,16 +205,16 @@ const MetaDataDrawer = (props: Props) => {
                 <fieldset className='w-full inline-flex items-start'>
                   <label className='relative inline-flex items-center cursor-pointer'>
                     <input
-                      checked={props.stateValue.isCommentDisabled}
+                      checked={props.stateValue.is_comment_disabled}
                       className='sr-only peer'
                       type='checkbox'
                       onChange={props.handleMetadataChange}
                       title='Disable Comments'
-                      name='isCommentDisabled'
+                      name='is_comment_disabled'
                     />
                     <div className="w-11 h-6 bg-rose-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-rose-900 after:border-rose-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                     <span className='ml-3 text-sm font-medium'>
-                      {props.stateValue.isCommentDisabled ? 'Yes' : 'No'}
+                      {props.stateValue.is_comment_disabled ? 'Yes' : 'No'}
                     </span>
                   </label>
                 </fieldset>
@@ -234,8 +234,8 @@ const MetaDataDrawer = (props: Props) => {
                   <form className='w-full mt-2'>
                     <input
                       title='Also Published @'
-                      value={props.stateValue.alsoPublishedAt}
-                      name='alsoPublishedAt'
+                      value={props.stateValue.also_published_on}
+                      name='also_published_on'
                       onChange={props.handleMetadataChange}
                       type='text'
                       className='appearance-none block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg placeholder-gray-400/70 pl-4 rtl:pr-4 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
@@ -256,12 +256,11 @@ const MetaDataDrawer = (props: Props) => {
                 <fieldset className='w-full px-4 py-2'>
                   <input
                     title='Datetime'
-                    value={props.stateValue.publishedDatetime}
-                    name='publishedDatetime'
+                    value={props.stateValue.published_datetime}
+                    name='published_datetime'
                     onChange={props.handleMetadataChange}
                     type='datetime-local'
                     className='appearance-none block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg placeholder-gray-400/70 pl-4 rtl:pr-4 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
-                    placeholder='Enter'
                   />
                 </fieldset>
               </fieldset>
