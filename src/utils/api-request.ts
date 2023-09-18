@@ -1,5 +1,6 @@
 import {
   ArticleItem,
+  CommentProps,
   ContentCheckerProps,
   EditorContentOutputProps,
   PaginationResponse,
@@ -116,15 +117,17 @@ export const CommonPathProps = async (table: string) => {
   }
 };
 
-export const getDataBySlug = async (table: string, slug: string):Promise<ArticleItem> => {
+export const getDataBySlug = async (
+  table: string,
+  slug: string
+): Promise<ArticleItem> => {
+  const { data } = await axios.get<SlugResponse>(
+    `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
+  );
+  const article = data.response?.items?.[0];
 
-    const { data } = await axios.get<SlugResponse>(
-      `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
-    );
-    const article = data.response?.items?.[0];
-
-    return article;
-  }
+  return article;
+};
 
 export const getAllArticles = async (pageOffset: number = 0) => {
   try {
@@ -329,21 +332,11 @@ export const updateArticle = async (articleData: ArticleItem, id: string) => {
   }
 };
 
-export const createComment = async (comment: ArticleItem, articleId: string) => {
+
+
+export const createComment = async (comment: CommentProps) => {
   try {
-    const response = await fetch(
-      `https://minimum-aqua.cmd.outerbase.io/comments/create?article_id=${articleId}`,
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ ...comment }),
-      }
-    );
-
-    const data = await response.json();
-
+    const { data } = await axios.post(`https://minimum-aqua.cmd.outerbase.io/comments/create`, {...comment})
     return data;
   } catch (error) {
     console.log(error);

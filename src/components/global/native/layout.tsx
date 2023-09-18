@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutProps } from '@/interface';
-import Header from '@/components/global/head';
+import Header from '@/components/global/native/head';
 
 const Layout = (props: LayoutProps) => {
   return (

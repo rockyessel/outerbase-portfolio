@@ -200,3 +200,19 @@ export interface EditorContentOutputProps {
     schema: boolean;
   };
 }
+
+
+export interface CommentProps {
+  comment_id: string;
+  content: string;
+  article_id: string;
+  user_id: string;
+  parent_comment_id: string;
+  replies: {
+    comment_id: string;
+    content: string;
+    article_id: string;
+    user_id: string;
+    parent_comment_id: string;
+  }[];
+}

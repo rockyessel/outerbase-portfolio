@@ -147,6 +147,10 @@ export const menuLink = [
     url: '/articles',
   },
   {
+    name: 'Digital Products',
+    url: '/digital-products',
+  },
+  {
     name: 'About',
     url: '/about',
   },
