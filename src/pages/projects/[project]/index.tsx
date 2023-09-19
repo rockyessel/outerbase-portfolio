@@ -21,7 +21,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<{ projectData: ProjectResponse }> = async (context) => {
   const { project }: any = context.params as Params;
-  const projectData: ProjectResponse = await getDataBySlug('projects',project);
+  const projectData: ProjectResponse = await getDataBySlug('public.projects',project);
   if (!projectData) return { notFound: true };
   return {
     props: { projectData: JSON.parse(JSON.stringify(projectData)) },

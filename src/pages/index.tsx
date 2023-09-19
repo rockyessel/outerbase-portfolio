@@ -1,11 +1,12 @@
-import Layout from '@/components/global/layout';
+
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getAllProfessionalProjects, getAllSideProjects, getMainContentHero } from '@/utils/api-request';
 import { ApiResponse, ProjectResponse } from '@/interface';
-import Hero from '@/components/global/hero';
 import { defaultMetaData } from '@/utils/services';
 import ContactSection from '@/components/global/contact-section';
 import ProjectSection from '@/components/projects/project-section';
+import Hero from '@/components/global/native/hero';
+import Layout from '@/components/global/native/layout';
 
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   console.log(props)

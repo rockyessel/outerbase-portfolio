@@ -117,11 +117,8 @@ export const CommonPathProps = async (table: string) => {
   }
 };
 
-export const getDataBySlug = async (
-  table: string,
-  slug: string
-): Promise<ArticleItem> => {
-  const { data } = await axios.get<SlugResponse>(
+export const getDataBySlug = async (table: string, slug: string) => {
+  const { data } = await axios.get(
     `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
   );
   const article = data.response?.items?.[0];
@@ -332,11 +329,12 @@ export const updateArticle = async (articleData: ArticleItem, id: string) => {
   }
 };
 
-
-
 export const createComment = async (comment: CommentProps) => {
   try {
-    const { data } = await axios.post(`https://minimum-aqua.cmd.outerbase.io/comments/create`, {...comment})
+    const { data } = await axios.post(
+      `https://minimum-aqua.cmd.outerbase.io/comments/create`,
+      { ...comment }
+    );
     return data;
   } catch (error) {
     console.log(error);

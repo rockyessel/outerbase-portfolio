@@ -1,4 +1,5 @@
-import Layout from '@/components/global/layout';
+
+import Layout from '@/components/global/native/layout';
 import Link from 'next/link';
 
 const NotFound = () => {

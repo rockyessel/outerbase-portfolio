@@ -3,7 +3,7 @@ import { getAllProjects } from '@/utils/api-request';
 import React from 'react';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 import ProjectCard from '@/components/projects/card';
-import Layout from '@/components/global/layout';
+import Layout from '@/components/global/native/layout';
 
 interface Props {}
 

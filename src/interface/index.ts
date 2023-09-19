@@ -201,7 +201,6 @@ export interface EditorContentOutputProps {
   };
 }
 
-
 export interface CommentProps {
   comment_id: string;
   content: string;
@@ -215,4 +214,11 @@ export interface CommentProps {
     user_id: string;
     parent_comment_id: string;
   }[];
+}
+
+export interface User {
+  name: string;
+  username: string;
+  email: string;
+  image: string;
 }

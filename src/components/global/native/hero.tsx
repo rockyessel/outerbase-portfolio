@@ -1,8 +1,7 @@
-import { adding_skills } from '@/utils/services';
 import Link from 'next/link';
 import { WebDeveloper } from '@/interface';
-import SkillsCard from './skills-card';
-import FollowButton from './follow-btn';
+import SkillsCard from '../skills-card';
+import FollowButton from '../follow-btn';
 
 interface Props {
   data: WebDeveloper;

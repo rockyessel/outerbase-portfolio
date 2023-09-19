@@ -2,6 +2,7 @@ import React from 'react';
 import '@/styles/globals.scss';
 import { useRouter } from 'next/router';
 import type { AppProps } from 'next/app';
+import Chat from '@/components/global/chat';
 import NextNProgress from 'nextjs-progressbar';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/components/global/native/navbar';
@@ -17,6 +18,7 @@ export default function App({Component, pageProps: { session, ...pageProps } }: 
         {!isDashboardRoute && <Navbar />}
         <NextNProgress color={'#ff5277'} />
         <Component {...pageProps} />
+        <Chat />
         {!isDashboardRoute && <Footer />}
       </SessionProvider>
     </React.Fragment>

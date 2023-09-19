@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Avatar from 'react-avatar';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { userCardList } from '@/utils/constants/user-menu';
 import { User } from '@/interface';
+import { userCardList } from '@/utils/services';
+import UserProfile from './profile';
 
 const UserMenu = () => {
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -42,13 +43,7 @@ const UserMenu = () => {
         className='flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 '
       >
         <span className='sr-only'>Open user menu</span>
-        <Avatar
-          name={user.name}
-          src={user.image}
-          size='40'
-          className='w-full h-full object-cover object-center'
-          round={true}
-        />
+        <UserProfile />
       </button>
       {showUserDropdown && (
         <div

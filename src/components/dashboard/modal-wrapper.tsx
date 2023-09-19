@@ -10,7 +10,7 @@ import { TfiClose } from 'react-icons/tfi';
 interface Props {
   children: React.ReactNode;
   buttonName: string | undefined;
-  type: 'create' | 'edit';
+  styles?:string;
 }
 
 const ModalWrapper = (props: Props) => {
@@ -32,10 +32,10 @@ const ModalWrapper = (props: Props) => {
       </button>
       {isWrapperModalOpened && (
         <div className='fixed inset-0 z-50 w-full force-overflow-hidden'>
-          <div className='absolute inset-0 bg-[#0e141b] w-full' />
-          <div className='relative w-full h-screen overflow-y-auto flex flex-col'>
+          <div className={`absolute inset-0 bg-[#0e141b] w-full ${props.styles ? props.styles : ''}`} />
+          {/* <div className='relative w-full h-screen overflow-y-auto flex flex-col'> */}
             {props.children}
-          </div>
+          {/* </div> */}
           <button
             type='button'
             title='Close Modal'
