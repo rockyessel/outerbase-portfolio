@@ -1,21 +1,23 @@
-
-import RegisterAuth from '@/components/auth/register';
-import { Params } from '@/interface';
-import { GetStaticPaths, GetStaticProps, InferGetServerSidePropsType } from 'next';
 import React from 'react';
+import { Params } from '@/interface';
+import AuthUI from '@/components/auth/ui';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { GetStaticPaths, GetStaticProps, InferGetServerSidePropsType, } from 'next';
 
-const AuthenticationPage = (props:InferGetServerSidePropsType<typeof getStaticProps>) => {
-  console.log(props);
-  
-    switch (props.auth) {
-        case 'register':
-            
-           return <RegisterAuth authPage={props.auth} />;
-           
-           default:
-               
-               return <>Login Component</>
-    }
+const AuthenticationPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
+  const { status } = useSession();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (status === 'authenticated') router.push('/');
+  }, [router, status]);
+
+  return (
+    // <main className='w-full h-auto flex items-center'>
+      <AuthUI type={props.auth} />
+    // </main>
+  );
 };
 
 export default AuthenticationPage;
