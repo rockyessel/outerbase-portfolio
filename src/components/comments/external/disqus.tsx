@@ -4,7 +4,6 @@ import React from 'react';
 const DisqusCommentsEngine = () => {
   return (
     <div>
-      return (
       <div>
         <div id='disqus_thread'>
           <Script id='my-script'>

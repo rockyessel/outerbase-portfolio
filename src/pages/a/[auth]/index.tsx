@@ -3,9 +3,15 @@ import { Params } from '@/interface';
 import AuthUI from '@/components/auth/ui';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { GetStaticPaths, GetStaticProps, InferGetServerSidePropsType, } from 'next';
+import {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetServerSidePropsType,
+} from 'next';
 
-const AuthenticationPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
+const AuthenticationPage = (
+  props: InferGetServerSidePropsType<typeof getStaticProps>
+) => {
   const { status } = useSession();
   const router = useRouter();
 
@@ -13,11 +19,7 @@ const AuthenticationPage = (props: InferGetServerSidePropsType<typeof getStaticP
     if (status === 'authenticated') router.push('/');
   }, [router, status]);
 
-  return (
-    // <main className='w-full h-auto flex items-center'>
-      <AuthUI type={props.auth} />
-    // </main>
-  );
+  return <AuthUI type={props.auth} />;
 };
 
 export default AuthenticationPage;
@@ -27,7 +29,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: authPaths, fallback: true };
 };
 
-export const getStaticProps: GetStaticProps<{ auth: string }> = async (context) => {
+export const getStaticProps: GetStaticProps<{ auth: string }> = async (
+  context
+) => {
   const { auth }: any = context.params as Params;
   return {
     props: {

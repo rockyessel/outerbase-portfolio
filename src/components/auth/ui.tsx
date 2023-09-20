@@ -41,7 +41,7 @@ const AuthUI = (props: Props) => {
   };
 
   return (
-    <div>
+    <main>
       <section className='flex flex-col  items-center'>
         <div className='w-full md:max-w-md lg:max-w-full md:w-1/2 xl:w-1/3 px-6 lg:px-16 xl:px-12 flex items-center justify-center'>
           <div className='w-full h-100'>
@@ -118,7 +118,7 @@ const AuthUI = (props: Props) => {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 

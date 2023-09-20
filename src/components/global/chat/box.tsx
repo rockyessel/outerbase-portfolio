@@ -6,6 +6,7 @@ interface Props {
 }
 
 const ChatBox = (props: Props) => {
+  
   const styles = {
     height: `${props.boxHeight}px`,
     transition: 'height 0.5s ease-in-out',

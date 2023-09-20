@@ -7,6 +7,8 @@ const nextConfig = {
       'hackernoon.imgix.net',
       'images.unsplash.com',
       'cdn.sanity.io',
+      'avatars.githubusercontent.com',
+      'robohash.org',
     ],
   },
 };

@@ -1,20 +1,20 @@
 import { User } from '@/interface';
-// import { Session } from 'next-auth'; Will check later
-import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import React from 'react';
-import Avatar from 'react-avatar';
 
-const UserProfile = () => {
-  const { data: session } = useSession();
+interface Props {
+  user: User
+}
 
-  const user = { ...session?.user } as User;
+const UserProfile = (props:Props) => {
   return (
-    <Avatar
-      name={user.name}
-      size='40'
-      src={user.image}
-      className='w-full h-full object-cover object-center'
-      round={true}
+    <Image
+      title={props.user.name}
+      alt={props.user.name}
+      width={500}
+      height={500}
+      src={props.user.image}
+      className='border-2 border-rose-700 w-12 h-12 object-cover object-center rounded-full'
     />
   );
 };

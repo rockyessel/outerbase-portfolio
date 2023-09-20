@@ -1,3 +1,4 @@
+import { CommentProps } from '@/interface';
 import { OutputData } from '@editorjs/editorjs';
 
 export const AbbrevNumber = (value: number): string => {
@@ -75,7 +76,6 @@ const decodeHtmlEntities = (text: string) => {
   return element.textContent || '';
 };
 
-
 const shuffleString = (input: string): string => {
   const shuffleRatio = Math.random() * 0.8;
   let characters = input.split('');
@@ -111,4 +111,20 @@ export const IdGen = (): string => {
   }
 
   return result;
+};
+
+export const processComments = (
+  comments: CommentProps[],
+  level: number = 1
+): CommentProps[] => {
+  if (level > 2) {
+    return []; // If the level exceeds 2, return an empty array
+  }
+
+  return comments
+    .filter((comment) => comment.content !== null) // Remove null objects
+    .map((comment) => ({
+      ...comment,
+      replies: processComments(comment.replies || [], level + 1), // Recursively process replies
+    }));
 };

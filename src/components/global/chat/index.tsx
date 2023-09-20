@@ -1,12 +1,9 @@
 import React from 'react';
-import ChatHead from './head';
-import ChatSendButton from './send-button';
-import ChatBody from './body';
-import ChatBox from './box';
-import { useSession } from 'next-auth/react';
-import Image from 'next/image';
-import ModalWrapper from '@/components/dashboard/modal-wrapper';
-import AuthScreen from './auth-screen';
+// import { useSession } from 'next-auth/react';
+
+import AdminChat from './admin';
+import UserChat from './user';
+import axios from 'axios';
 
 export const dummyChatHistory = [
   {
@@ -42,32 +39,19 @@ export const dummyChatHistory = [
 ];
 
 const Chat = () => {
-  const [minimize, setMinimize] = React.useState('450');
-  const [editableContent, setEditableContent] = React.useState('');
-  const [chatHistory, setChatHistory] = React.useState<any[]>(dummyChatHistory);
+  // const [minimize, setMinimize] = React.useState('450');
+  // const [editableContent, setEditableContent] = React.useState('');
+  // const [chatHistory, setChatHistory] = React.useState<any[]>(dummyChatHistory);
 
-  const { status } = useSession();
-  console.log('status', status);
+  // const { status } = useSession();
+  // console.log('status', status);
 
-  const handleContentChange = () => {};
-  const handleSendMessage = async () => {};
+  // const handleContentChange = () => {};
+  // const handleSendMessage = async () => {};
 
   return (
     <div className='fixed bottom-0 right-0 flex items-end h-0 text-black'>
-      <ChatBox boxHeight={minimize}>
-        <ChatHead minimizeValue={minimize} setMinimizeValue={setMinimize} />
-        {status === 'authenticated' ? (
-          <React.Fragment>
-            <ChatBody chatHistory={chatHistory} />
-            <ChatSendButton
-              handleContentChange={handleContentChange}
-              handleSendMessage={handleSendMessage}
-            />
-          </React.Fragment>
-        ) : (
-          <AuthScreen />
-        )}
-      </ChatBox>
+      <AdminChat />
     </div>
   );
 };

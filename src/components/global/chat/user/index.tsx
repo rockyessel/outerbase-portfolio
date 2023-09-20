@@ -7,11 +7,14 @@ import ChatBody from '../body';
 import ChatSendButton from '../send-button';
 import { dummyChatHistory } from '..';
 import AuthScreen from '../auth-screen';
+import axios from 'axios';
 
 const UserChat = () => {
   const [minimize, setMinimize] = React.useState('450');
   const [editableContent, setEditableContent] = React.useState('');
   const [chatHistory, setChatHistory] = React.useState<any[]>(dummyChatHistory);
+  const [selectedUser, setSelectedUser] = React.useState<any>();
+
 
   const { status } = useSession();
   console.log('status', status);
@@ -24,7 +27,7 @@ const UserChat = () => {
       <ChatHead minimizeValue={minimize} setMinimizeValue={setMinimize} />
       {status === 'authenticated' ? (
         <React.Fragment>
-          <ChatBody chatHistory={chatHistory} />
+          <ChatBody  chatHistory={chatHistory} />
           <ChatSendButton
             handleContentChange={handleContentChange}
             handleSendMessage={handleSendMessage}

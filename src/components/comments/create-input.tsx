@@ -9,7 +9,7 @@ interface Props {
   style: string | undefined;
 }
 
-const CommentInput = (props: Props) => {
+const CreateCommentInput = (props: Props) => {
   const [commentContent, setCommentContent] = React.useState('');
 
   const handleSubmission = async (event: React.SyntheticEvent) => {
@@ -29,7 +29,7 @@ const CommentInput = (props: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmission} className='mb-6'>
+    <form onSubmit={handleSubmission} className='mt-1 w-full mb-6'>
       <div
         className={`py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-rose-200 ${
           props.style ? props.style : ''
@@ -55,4 +55,4 @@ const CommentInput = (props: Props) => {
   );
 };
 
-export default CommentInput;
+export default CreateCommentInput;

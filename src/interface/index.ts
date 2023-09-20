@@ -201,24 +201,22 @@ export interface EditorContentOutputProps {
   };
 }
 
-export interface CommentProps {
-  comment_id: string;
-  content: string;
-  article_id: string;
-  user_id: string;
-  parent_comment_id: string;
-  replies: {
-    comment_id: string;
-    content: string;
-    article_id: string;
-    user_id: string;
-    parent_comment_id: string;
-  }[];
-}
+
 
 export interface User {
   name: string;
   username: string;
   email: string;
   image: string;
+}
+
+
+export interface CommentProps {
+  comment_id: string;
+  user_id: string;
+  content: string;
+  article_id: string;
+  parent_comment_id?: string | null;
+  created_at: string;
+  replies?: CommentProps[];
 }

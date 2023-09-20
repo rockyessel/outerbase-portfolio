@@ -8,8 +8,8 @@ interface Props {
   timestamp: string;
 }
 
-const UserChat = (props: Props) => {
-  const [user, setUser] = React.useState<User | {}>({});
+const UserChatWithTimestamp = (props: Props) => {
+  const [user, setUser] = React.useState<User>();
 
   const fetchUser = async () => {
     // const usr = await fetchUserByField({ _id: props.userId });
@@ -44,4 +44,4 @@ const UserChat = (props: Props) => {
   );
 };
 
-export default UserChat;
+export default UserChatWithTimestamp;

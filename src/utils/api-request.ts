@@ -105,6 +105,22 @@ export const getAllProjects = async () => {
   }
 };
 
+export const getArticleBySlug = async (slug: string) => {
+  const { data } = await axios.get(
+    `https://minimum-aqua.cmd.outerbase.io/data/slug?slug=${slug}`
+  );
+  const article = data.response?.items?.[0];
+
+  return article;
+};
+
+export const getAllArticlesSlugs = async () => {
+  const { data } = await axios.get(
+    `https://minimum-aqua.cmd.outerbase.io/data/all/slug`
+  );
+  return data;
+};
+
 export const CommonPathProps = async (table: string) => {
   try {
     const { data } = await axios.get(
@@ -234,7 +250,6 @@ export const getContent = async (
 };
 
 export const getImageURL = async (files: File[]) => {
-  console.log(files);
   try {
     const formData = new FormData();
 
@@ -280,7 +295,6 @@ export const decodeBase64ToObject = (base64: string) => {
   }
   const json = new TextDecoder().decode(utf8Bytes);
   const obj = JSON.parse(json);
-  console.log('json parsed', obj);
   return obj;
 };
 
