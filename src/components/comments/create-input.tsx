@@ -1,9 +1,11 @@
 import { CommentProps } from '@/interface';
-import { createComment } from '@/utils/api-request';
 import { IdGen } from '@/utils/function';
+import { createComment, createReply } from '@/utils/outerbase-req/comments';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 interface Props {
+  type: string;
   articleId: string;
   parentCommentId: string | undefined;
   style: string | undefined;
@@ -11,20 +13,45 @@ interface Props {
 
 const CreateCommentInput = (props: Props) => {
   const [commentContent, setCommentContent] = React.useState('');
+  const router = useRouter();
 
   const handleSubmission = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    try {
-      const obj: CommentProps = {
-        comment_id: IdGen(),
-        content: commentContent,
-        article_id: props.articleId,
-        user_id: '',
-        parent_comment_id: '',
-      };
+    let obj: CommentProps;
 
-      await createComment(obj);
+    try {
+      if (props.type === 'create') {
+        const commentId = IdGen('comment');
+        obj = {
+          reply_id: '',
+          comment_id: commentId,
+          article_id: props.articleId,
+          user_id: 'User 1',
+          content: commentContent,
+          parent_comment_id: '',
+          created_at: new Date().toISOString(),
+        };
+
+        await createComment(obj);
+      }
+
+      if (props.type === 'reply') {
+        const replyId = IdGen('reply');
+        obj = {
+          comment_id: '',
+          reply_id: replyId,
+          article_id: props.articleId,
+          user_id: 'User 1',
+          content: commentContent,
+          parent_comment_id: props.parentCommentId,
+          created_at: new Date().toISOString(),
+        };
+
+        await createReply(obj);
+      }
+
+      router.replace(router.asPath);
     } catch (error) {}
   };
 

@@ -19,6 +19,7 @@ const MainComment = (props: Props) => {
             </h2>
           </div>
           <CreateCommentInput
+            type='create'
             articleId={props.articleId}
             parentCommentId={undefined}
             style={undefined}

@@ -213,6 +213,7 @@ export interface User {
 
 export interface CommentProps {
   comment_id: string;
+  reply_id: string | null;
   user_id: string;
   content: string;
   article_id: string;

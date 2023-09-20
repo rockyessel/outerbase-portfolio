@@ -2,7 +2,7 @@ import React from 'react';
 import { processComments } from '@/utils/function';
 import ArticleHeader from '@/components/articles/header';
 import CommentEngineWrapper from '@/components/comments/wrapper';
-import { getArticleComments } from '@/utils/outerbase-req/comments';
+import { getArticleComments, getFormatCommentsAndReplies } from '@/utils/outerbase-req/comments';
 import ArticleDetailedCard from '@/components/articles/detailed-card';
 import { ArticleItem, CommentProps, CommonPath, Params } from '@/interface';
 import { getAllArticlesSlugs, getArticleBySlug } from '@/utils/api-request';
@@ -11,13 +11,15 @@ import { GetStaticProps, GetStaticPaths, InferGetServerSidePropsType } from 'nex
 
 const ArticleDetailedPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
   const [hasIncremented, setHasIncremented] = React.useState<boolean>(false);
-  const [commentHistory, setCommentHistory] = React.useState<CommentProps[]>();
+  const [commentHistory, setCommentHistory] = React.useState<any[]>();
+
+  console.log('commentHistory', commentHistory);
 
   const fetchArticleComments = async (articleId: string) => {
     if (articleId) {
-      const comments = await getArticleComments(articleId);
-      const refactoredComments = processComments(comments);
-      setCommentHistory(refactoredComments);
+      const comments = await getFormatCommentsAndReplies(articleId);
+    
+      setCommentHistory(comments);
     }
   };
 

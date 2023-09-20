@@ -83,7 +83,7 @@ const shuffleString = (input: string): string => {
   return characters.join('');
 };
 
-export const IdGen = (): string => {
+export const IdGen = (type: string): string => {
   // Shuffling the characters to ensure randomness
   const characters = shuffleString(
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -110,7 +110,7 @@ export const IdGen = (): string => {
     usedChars.push(characters[index]);
   }
 
-  return result;
+  return `${type}_${result}`;
 };
 
 export const processComments = (

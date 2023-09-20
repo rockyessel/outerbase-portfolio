@@ -222,13 +222,10 @@ export const createOrUpdateContent = async (
   }
 };
 
-export const getContent = async (
-  table: string,
-  id: number
-): Promise<OutputData | undefined> => {
+export const getContent = async (): Promise<OutputData | undefined> => {
   try {
     const { data } = await axios.get<EditorContentOutputProps>(
-      `https://minimum-aqua.cmd.outerbase.io/content?table=${table}&id=${id}`
+      `https://minimum-aqua.cmd.outerbase.io/content`
     );
     if (data.success) {
       const doesContentExist = data.response.items[0]?.editorcontentoutput;
@@ -337,18 +334,6 @@ export const updateArticle = async (articleData: ArticleItem, id: string) => {
 
     const data = await response.json();
 
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const createComment = async (comment: CommentProps) => {
-  try {
-    const { data } = await axios.post(
-      `https://minimum-aqua.cmd.outerbase.io/comments/create`,
-      { ...comment }
-    );
     return data;
   } catch (error) {
     console.log(error);

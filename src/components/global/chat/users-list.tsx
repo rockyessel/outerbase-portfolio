@@ -24,10 +24,7 @@ const ChatUsersList = (props: Props) => {
       .catch((error) => console.log(error));
   }, []);
 
-  // React.useEffect(()=>{props.setSelectedUser},[props.setSelectedUser])
-  const message = ` This is our last message we sent, remember? If not then there's
-                nothing i can do`;
-  console.log('users: ', users);
+  const message = ` This is our last message we sent, remember? If not then there's nothing i can do`;
 
   return (
     <div className='flex-1 flex flex-col gap-2 p-4 overflow-y-auto overflow-x-hidden bg-white divide-y-[1px] divide-gray-700 divide-opacity-50 px-2'>
@@ -37,7 +34,7 @@ const ChatUsersList = (props: Props) => {
           type='button'
           onClick={() => props.setSelectedUser(user)}
           key={index}
-          className='flex items-center gap-2 py-2.5 relative truncate'
+          className='flex items-center gap-2 py-2.5'
         >
           <UserProfile user={user} />
           <span>
@@ -47,7 +44,7 @@ const ChatUsersList = (props: Props) => {
             </span>
             <span>
               <span className='w-full inline-flex items-start text-[11px] truncate text-gray-500'>
-                {message.slice(0, 55)}...
+                {message}
               </span>
             </span>
           </span>
