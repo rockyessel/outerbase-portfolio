@@ -151,6 +151,7 @@ export interface ArticleItem {
   caption: string;
   tags: string;
   keywords: string;
+  audio_url: string;
   published_datetime: string;
   also_published_on: string;
   is_comment_disabled: boolean;

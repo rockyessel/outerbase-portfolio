@@ -1,7 +1,7 @@
-import { ArticleItem } from '@/interface';
-import { getImageURL } from '@/utils/api-request';
-import { createSlug } from '@/utils/function';
 import React from 'react';
+import { ArticleItem } from '@/interface';
+import { createSlug } from '@/utils/function';
+import { getImageURL } from '@/utils/api-request';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 
 interface Props {
@@ -23,7 +23,7 @@ const MetaDataDrawer = (props: Props) => {
   const handleFileUploads = async () => {
     if (selectedFile) {
       const imgURL = await getImageURL(selectedFile);
-      if(imgURL) props.setStateValue({ ...props.stateValue, image: imgURL });
+      if (imgURL) props.setStateValue({ ...props.stateValue, image: imgURL });
     }
   };
 
@@ -33,7 +33,6 @@ const MetaDataDrawer = (props: Props) => {
       setSelectedFile(file);
     }
   };
-
   const handleGenerateSlug = () => {
     const generatedSlug = createSlug(props.stateValue.title);
     props.setStateValue({

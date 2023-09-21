@@ -17,6 +17,7 @@ import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
 import { OutputData } from '@editorjs/editorjs';
 import serialize from 'serialize-javascript';
 import { IdGen, getTextFromEditorContent } from '@/utils/function';
+import axios from 'axios';
 
 const init = {
   id: '',
@@ -28,6 +29,7 @@ const init = {
   caption: '',
   tags: '',
   keywords: '',
+  audio_url: '',
   published_datetime: '',
   also_published_on: '',
   is_comment_disabled: false,
@@ -44,16 +46,19 @@ const init = {
 
 const DashboardArticles = () => {
   const [view, setView] = React.useState('all');
-  const [showMetaDataDrawer, setShowMetaDataDrawer] = React.useState<boolean>(false);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] =
+    React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
   const [totalPages, setTotalPages] = React.useState<number>();
   const [activePage, setActivePage] = React.useState<number>(0);
   const [pageNumLimit, setPageNumLimit] = React.useState(1);
   const [articles, setArticles] = React.useState<ArticleResponse>();
-  const [articleMetaData, setArticleMetaData] = React.useState<ArticleItem>(init);
+  const [articleMetaData, setArticleMetaData] =
+    React.useState<ArticleItem>(init);
   const [articleContent, setArticleContent] = React.useState<OutputData>();
   const [totalCharacters, setTotalCharacters] = React.useState<number>(0);
   const [totalWords, setTotalWords] = React.useState<number>(0);
+  const [plainText, setPlainText] = React.useState<string>('');
 
   React.useEffect(() => {
     getArticlePagination().then((pageNumber) => setTotalPages(pageNumber));
@@ -93,6 +98,12 @@ const DashboardArticles = () => {
     // Make sure there's no empty string inn articleContent
     const isContentAdded = articleMetaData.content.length > 10; // Denoting that content is not empty.;
 
+    if (articleMetaData.audio_url) return;
+    else {
+      const data = await axios.post('/api/tts', plainText);
+      console.log('data: ', data);
+    }
+
     switch (type) {
       case 'draft':
         if (isContentAdded) createArticle(articleMetaData);
@@ -131,12 +142,13 @@ const DashboardArticles = () => {
     setArticleMetaData(formUpdates);
   };
 
+  console.log('plainText: ', plainText);
+
   React.useEffect(() => {
-    const plainText = getTextFromEditorContent(articleContent);
-    console.log('plainText: ', plainText);
+    setPlainText(getTextFromEditorContent(articleContent));
     setTotalCharacters(plainText.length);
     setTotalWords(plainText.split(' ').length);
-  }, [articleContent]);
+  }, [articleContent, plainText]);
 
   const allItems = articles?.response?.items;
   let filteredItems: ArticleItem[] | undefined = [];
