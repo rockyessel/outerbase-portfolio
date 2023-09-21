@@ -1,7 +1,6 @@
 import { getImageURL } from '@/utils/api-request';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 import React from 'react';
-import debounce from 'lodash/debounce';
 
 interface Props {
   set: React.Dispatch<React.SetStateAction<OutputData | undefined>>;
@@ -69,7 +68,7 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
             class: ImageTool,
             config: {
               uploader: {
-                async uploadByFile(files: File[]) {
+                async uploadByFile(files: File) {
                   const imageURL = await getImageURL(files);
                   return {
                     success: 1,
@@ -108,6 +107,19 @@ const TextEditor = ({ value, set, oldContent }: Props) => {
       setIsMounted(true);
     }
   }, []);
+
+
+// To prevent the editor from appearing twice.
+  React.useEffect(() => {
+    // Get all elements with class "codex-editor__redactor"
+    const redactorElements = document.querySelectorAll('.codex-editor__redactor');
+
+    // Check if there are at least two elements
+    if (redactorElements && redactorElements.length >= 2) {
+      // Remove the first element (index 0)
+      redactorElements?.[0]?.parentNode?.removeChild(redactorElements[0])!;
+    }
+  }, []); 
 
   return (
     <div className='w-full px-4 mt-0 pt-0 text-white relative'>

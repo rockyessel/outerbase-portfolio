@@ -246,16 +246,12 @@ export const getContent = async (): Promise<OutputData | undefined> => {
   return undefined;
 };
 
-export const getImageURL = async (files: File[]) => {
+export const getImageURL = async (files: File) => {
   try {
     const formData = new FormData();
+    formData.append('file', files);
 
-    // Append each file separately
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-
-    const response = await axios.post<{ urls: string[] }>(
+    const response = await axios.post<{ url: string }>(
       `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}`,
       formData,
       {
@@ -265,8 +261,8 @@ export const getImageURL = async (files: File[]) => {
       }
     );
 
-    console.log('response.data.urls', response.data.urls);
-    return response.data.urls; // Assuming the backend returns an array of URLs for each uploaded file
+    console.log('response.data.urls', response.data.url);
+    return response.data.url; // Assuming the backend returns an array of URLs for each uploaded file
   } catch (error) {
     console.error('Error uploading images:', error);
     throw error;

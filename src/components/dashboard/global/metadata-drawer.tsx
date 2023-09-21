@@ -18,21 +18,19 @@ interface Props {
 }
 
 const MetaDataDrawer = (props: Props) => {
-  const [selectedFile, setSelectedFile] = React.useState<File[]>();
-  const [imageURL, setImageURL] = React.useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = React.useState<File>();
 
   const handleFileUploads = async () => {
     if (selectedFile) {
       const imgURL = await getImageURL(selectedFile);
-      setImageURL(imgURL);
+      if(imgURL) props.setStateValue({ ...props.stateValue, image: imgURL });
     }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const fileList = Array.from(files);
-      setSelectedFile(fileList);
+    if (event.target.files) {
+      const file = event.target.files[0];
+      setSelectedFile(file);
     }
   };
 

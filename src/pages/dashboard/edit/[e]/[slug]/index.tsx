@@ -52,6 +52,8 @@ const EditContentPage = () => {
   const router = useRouter();
   const { e, slug } = router.query;
 
+  console.log('articleMetaData: ', articleMetaData);
+
   const handleReset = () => setArticleMetaData(init);
 
   const handleSubmission = async (type: string) => {
@@ -78,7 +80,7 @@ const EditContentPage = () => {
         break;
     }
   };
-
+  console.log('editContent', editContent);
   const table = `public.${e}`;
   React.useEffect(() => {
     getDataBySlug(table, `${slug}`).then((content) => {
@@ -115,6 +117,7 @@ const EditContentPage = () => {
   React.useEffect(() => {});
   return (
     <main className='relative w-full h-screen overflow-y-auto flex flex-col'>
+      <button className='w-full float-right'>Button</button>
       <MetaDataDrawer
         handleMetadataChange={handleMetadataChange}
         stateValue={articleMetaData}

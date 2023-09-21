@@ -44,21 +44,16 @@ const init = {
 
 const DashboardArticles = () => {
   const [view, setView] = React.useState('all');
-  const [showMetaDataDrawer, setShowMetaDataDrawer] =
-    React.useState<boolean>(false);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
   const [totalPages, setTotalPages] = React.useState<number>();
   const [activePage, setActivePage] = React.useState<number>(0);
   const [pageNumLimit, setPageNumLimit] = React.useState(1);
   const [articles, setArticles] = React.useState<ArticleResponse>();
-  const [articleMetaData, setArticleMetaData] =
-    React.useState<ArticleItem>(init);
+  const [articleMetaData, setArticleMetaData] = React.useState<ArticleItem>(init);
   const [articleContent, setArticleContent] = React.useState<OutputData>();
   const [totalCharacters, setTotalCharacters] = React.useState<number>(0);
   const [totalWords, setTotalWords] = React.useState<number>(0);
-
-  console.log('articles data: ', articles);
-  console.log('articleContent: ', articleContent);
 
   React.useEffect(() => {
     getArticlePagination().then((pageNumber) => setTotalPages(pageNumber));
@@ -93,7 +88,7 @@ const DashboardArticles = () => {
     articleMetaData.word_count = totalWords;
     articleMetaData.character_count = totalCharacters;
     articleMetaData.reading_minutes = totalReadingMinutes;
-    articleMetaData.id = IdGen();
+    articleMetaData.id = IdGen('ARTICLE');
 
     // Make sure there's no empty string inn articleContent
     const isContentAdded = articleMetaData.content.length > 10; // Denoting that content is not empty.;
@@ -169,7 +164,7 @@ const DashboardArticles = () => {
             </div>
 
             <div className='flex items-center mt-4 gap-x-3'>
-              <ModalWrapper type='create' buttonName='Create Article'>
+              <ModalWrapper buttonName='Create Article'>
                 <MetaDataDrawer
                   handleMetadataChange={handleMetadataChange}
                   stateValue={articleMetaData}

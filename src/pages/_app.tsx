@@ -18,7 +18,7 @@ export default function App({Component, pageProps: { session, ...pageProps } }: 
         {!isDashboardRoute && <Navbar />}
         <NextNProgress color={'#ff5277'} />
         <Component {...pageProps} />
-        <Chat />
+        {!isDashboardRoute && <Chat />}
         {!isDashboardRoute && <Footer />}
       </SessionProvider>
     </React.Fragment>
