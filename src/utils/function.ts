@@ -1,5 +1,6 @@
 import { CommentProps } from '@/interface';
 import { OutputData } from '@editorjs/editorjs';
+import axios from 'axios';
 
 export const AbbrevNumber = (value: number): string => {
   if (value < 1000) {
@@ -128,3 +129,11 @@ export const processComments = (
       replies: processComments(comment.replies || [], level + 1), // Recursively process replies
     }));
 };
+
+
+  export const generateTextToAudioURL = async (plainText: string) => {
+    const { data } = (await axios.post('http://localhost:3000/api/tts', { plainText })) as {
+      data: { url: string };
+    };
+    return data.url;
+  };

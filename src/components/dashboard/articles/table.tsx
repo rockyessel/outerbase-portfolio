@@ -70,7 +70,7 @@ const Table = (props: Props) => {
                 <span>{data.comments_count}</span>
               </td>
               <td className='px-1 py-1 text-sm text-left whitespace-nowrap'>
-                <AudioBox source='' />
+                <AudioBox source={data.audio_url} />
               </td>
               <td className='px-1 py-1 text-left whitespace-nowrap'>
                 <Link href={`/dashboard/edit/articles/${data.slug}`}>

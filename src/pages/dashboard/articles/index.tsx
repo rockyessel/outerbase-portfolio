@@ -1,7 +1,7 @@
 import ModalWrapper from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/articles/table';
-import React, { RefObject } from 'react';
+import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { MdArrowBack } from 'react-icons/md';
 import { IoMdArrowForward } from 'react-icons/io';
@@ -16,7 +16,7 @@ import TextEditor from '@/components/dashboard/global/text-editor';
 import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
 import { OutputData } from '@editorjs/editorjs';
 import serialize from 'serialize-javascript';
-import { IdGen, getTextFromEditorContent } from '@/utils/function';
+import { IdGen, generateTextToAudioURL, getTextFromEditorContent } from '@/utils/function';
 import axios from 'axios';
 
 const init = {
@@ -83,8 +83,11 @@ const DashboardArticles = () => {
     'Edit',
   ];
 
+
+
   const handleSubmission = async (type: string) => {
-    if (articleContent && articleMetaData) {
+    const audio = await generateTextToAudioURL(plainText);
+    if (audio !== '' && articleContent && articleMetaData) {
       const serializedArticleContent = serialize(articleContent);
       articleMetaData.content = encodeObjectToBase64(serializedArticleContent);
     }
@@ -94,15 +97,10 @@ const DashboardArticles = () => {
     articleMetaData.character_count = totalCharacters;
     articleMetaData.reading_minutes = totalReadingMinutes;
     articleMetaData.id = IdGen('ARTICLE');
+    articleMetaData.audio_url = audio;
 
     // Make sure there's no empty string inn articleContent
     const isContentAdded = articleMetaData.content.length > 10; // Denoting that content is not empty.;
-
-    if (articleMetaData.audio_url) return;
-    else {
-      const data = await axios.post('/api/tts', plainText);
-      console.log('data: ', data);
-    }
 
     switch (type) {
       case 'draft':
@@ -141,8 +139,6 @@ const DashboardArticles = () => {
     };
     setArticleMetaData(formUpdates);
   };
-
-  console.log('plainText: ', plainText);
 
   React.useEffect(() => {
     setPlainText(getTextFromEditorContent(articleContent));

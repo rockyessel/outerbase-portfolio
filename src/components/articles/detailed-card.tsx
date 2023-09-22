@@ -14,6 +14,7 @@ interface Props {
 const ArticleDetailedCard = (props: Props) => {
   const decodedContent = decodeBase64ToObject(props.data?.content);
   const deserializeContent: OutputData = deserialize(decodedContent);
+  
   return (
     <React.Fragment>
       <div className='flex flex-col gap-4'>

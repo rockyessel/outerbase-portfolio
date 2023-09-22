@@ -14,6 +14,7 @@ interface Props {
 const ArticleCard = (props: Props) => {
   const tags = props.data?.tags?.split(',').map((tag) => tag.trim());
   const viewCount = AbbrevNumber(props.data.seen_count);
+  console.log('viewCount', props.data.seen_count);
 
   const MAX_TITLE: number = 70;
   const MAX_DESCRIPTION: number = 157;
@@ -55,7 +56,6 @@ const ArticleCard = (props: Props) => {
               <AiOutlineEye className={`text-lg`} />
               {viewCount}
             </span>
-
           </div>
         </div>
 
@@ -103,4 +103,3 @@ const ArticleCard = (props: Props) => {
 };
 
 export default ArticleCard;
-            
