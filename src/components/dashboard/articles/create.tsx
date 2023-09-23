@@ -6,7 +6,7 @@ import { OutputData } from '@editorjs/editorjs';
 import { ArticleItem } from '@/interface';
 
 interface Props {
-    handleMetadataChange: (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>void;
+    handleMetadataChange: (event: | React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => void;
     itemMetadata: ArticleItem | any
     setItemMetadata: React.Dispatch<React.SetStateAction<ArticleItem | any>>
     setShowMetadataDrawer: React.Dispatch<React.SetStateAction<boolean>>

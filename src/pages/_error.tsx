@@ -1,11 +1,10 @@
-// pages/_error.js
-import React from 'react'
+import React from 'react';
 
 import Router from 'next/router';
 
 class ErrorPage extends React.Component {
   // This method will be called whenever there is an error.
-  static async getInitialProps({ res, err }) {
+  static async getInitialProps({ res, err }: { res: any; err: any }) {
     // Check if there is an error with a network error code.
     if (err && err.code === 'ECONNREFUSED') {
       if (res) {

@@ -25,26 +25,26 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.TWITTER_CLIENT_SECRET!,
     }),
     // Credentials authentication provider configuration
-    // CredentialsProvider({
-    //   name: 'credentials',
-    //   credentials: {
-    //     email: { label: 'email', type: 'text' },
-    //     password: { label: 'password', type: 'password' },
-    //   },
-    //   // Custom authorization logic for credentials-based authentication
-    //   async authorize(credentials) {
-    //     try {
-    //       if (!credentials?.email || !credentials?.password) {
-    //         throw new Error('Invalid credentials');
-    //       }
-    //       const user = await authUser(credentials);
-    //       return user;
-    //     } catch (error) {
-    //       console.error('Error verifying user credentials:', error);
-    //       throw error;
-    //     }
-    //   },
-    // }),
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'email', type: 'text' },
+        password: { label: 'password', type: 'password' },
+      },
+      //   // Custom authorization logic for credentials-based authentication
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('Invalid credentials');
+          }
+          const user = await findUser(credentials);
+          return user;
+        } catch (error) {
+          console.error('Error verifying user credentials:', error);
+          throw error;
+        }
+      },
+    }),
   ],
 
   // Configure JSON Web Token (JWT) encoding and decoding

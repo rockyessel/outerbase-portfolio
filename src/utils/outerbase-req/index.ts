@@ -1,1 +1,3 @@
-export { default as increaseArticleViewCount } from '@/utils/outerbase-req/articles';
+import { increaseArticleViewCount } from '@/utils/outerbase-req/articles';
+
+export { increaseArticleViewCount };

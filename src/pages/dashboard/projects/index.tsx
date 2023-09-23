@@ -1,195 +1,197 @@
 import DashboardLayout from '@/components/dashboard/layout';
-import Table from '@/components/dashboard/projects/table';
+import Table from '@/components/dashboard/articles/table';
 import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { MdArrowBack } from 'react-icons/md';
-import { IoMdArrowForward } from 'react-icons/io';
-import { ProjectResponse } from '@/interface';
+import { ArticleItem, ArticleResponse } from '@/interface';
 import {
   createArticle,
   encodeObjectToBase64,
-  getAllProjects,
+  getAllArticles,
+  getArticlePagination,
 } from '@/utils/api-request';
-import { GetStaticProps, InferGetServerSidePropsType } from 'next';
-import ModalWrapper from '@/components/dashboard/modal-wrapper';
-import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
-import TextEditor from '@/components/dashboard/global/text-editor';
-import { ArticleMetaDataProps, initialMetaDataValues } from '../articles';
 import { OutputData } from '@editorjs/editorjs';
-import serializeJavascript from 'serialize-javascript';
-import { getTextFromEditorContent } from '@/utils/function';
+import serialize from 'serialize-javascript';
+import {
+  IdGen,
+  generateTextToAudioURL,
+  getTextFromEditorContent,
+} from '@/utils/function';
+import DashboardDisplay from '@/components/dashboard/articles/create';
+import ViewButtons from '@/components/dashboard/articles/view-button';
+import ItemsHeader from '@/components/dashboard/articles/items-header';
+import PaginateButton from '@/components/dashboard/articles/paginate-button';
+import CurrentPageInfo from '@/components/dashboard/articles/current-page';
+import {
+  articleTableHeaders,
+  initArticleValue,
+} from '@/utils/constants/articles';
+import { getAllProjects, getProjectTotalPageNumber } from '@/utils/outerbase-req/projects';
 
-interface Props {}
-
-const DashboardProjects = (
-  props: InferGetServerSidePropsType<typeof getStaticProps>
-) => {
-  console.log(props);
-  const [showMetaDataDrawer, setShowMetaDataDrawer] =
-    React.useState<boolean>(false);
-  const [projectMetaData, setProjectMetaData] =
-    React.useState<ArticleMetaDataProps>(initialMetaDataValues);
-  const [projectContent, setProjectContent] = React.useState<OutputData>();
-
+const DashboardProject = () => {
+  const [view, setView] = React.useState('all');
+  const [showMetaDataDrawer, setShowMetaDataDrawer] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
+  const [totalPages, setTotalPages] = React.useState<number>();
+  const [activePage, setActivePage] = React.useState<number>(0);
+  const [pageNumLimit, setPageNumLimit] = React.useState(1);
+  const [projects, setProjects] = React.useState<ArticleResponse>();
+  const [projectMetaData, setProjectMetaData] =
+    React.useState<ArticleItem>(initArticleValue);
+  const [projectContent, setProjectContent] = React.useState<OutputData>();
+  const [totalCharacters, setTotalCharacters] = React.useState<number>(0);
+  const [totalWords, setTotalWords] = React.useState<number>(0);
+  const [plainText, setPlainText] = React.useState<string>('');
+
   React.useEffect(() => {
-    setLoading(false);
-  }, []);
-  const tablesHeaders = ['Name', 'Live URL', 'Source Code', 'Tools', ''];
+    getProjectTotalPageNumber().then((totalPageNum) => setTotalPages(totalPageNum));
+  });
+
+  React.useEffect(() => {
+    getAllProjects(activePage).then((projects) => {
+      setProjects(projects);
+      setLoading(false);
+    });
+  }, [activePage]);
+
+  const handleReset = () => setProjectMetaData(initArticleValue);
+
+  console.log('totalPages: ', totalPages);
 
   const handleSubmission = async (type: string) => {
-    if (projectContent && projectMetaData) {
-      const serializedArticleContent = serializeJavascript(projectContent);
-      const data = (projectMetaData.content = encodeObjectToBase64(
-        serializedArticleContent
-      ));
-      console.log('data', data);
-      console.log('projectMetaData: ', projectMetaData);
-      const plainText = getTextFromEditorContent(projectContent);
-      console.log('plainText: ', plainText);
+    const audio = await generateTextToAudioURL(plainText);
+    if (audio !== '' && projectContent && projectMetaData) {
+      const serializedArticleContent = serialize(projectContent);
+      projectMetaData.content = encodeObjectToBase64(serializedArticleContent);
     }
+    const wordsPerMinute = 200;
+    const totalReadingMinutes = Math.ceil(totalWords / wordsPerMinute);
+    projectMetaData.word_count = totalWords;
+    projectMetaData.character_count = totalCharacters;
+    projectMetaData.reading_minutes = totalReadingMinutes;
+    projectMetaData.id = IdGen('ARTICLE');
+    projectMetaData.audio_url = audio;
 
-    // Make sure there's no empty string inn articleContent
-    const ifThereIsData = true;
+    // Make sure there's no empty string inn projectContent
+    const isContentAdded = projectMetaData.content.length > 10; // Denoting that content is not empty.;
 
     switch (type) {
       case 'draft':
-        if (ifThereIsData) createArticle(projectMetaData);
+        if (isContentAdded) createArticle(projectMetaData);
+        console.log('projectMetaData', projectMetaData);
         break;
       case 'publish':
         projectMetaData.is_published = true;
-        if (ifThereIsData) createArticle(projectMetaData);
+        console.log('projectMetaData', projectMetaData);
+        if (isContentAdded) createArticle(projectMetaData);
         break;
-
       default:
+        console.log('article handleSubmission invalid type.');
         break;
     }
   };
 
+  const handlePagination = (type: 'next' | 'previous') => {
+    if (type === 'next' && pageNumLimit < totalPages!) {
+      setActivePage((prevActivePage) => prevActivePage + 10);
+      setPageNumLimit((prevPageNumLimit) => prevPageNumLimit + 1);
+    } else if (type === 'previous' && pageNumLimit > 1) {
+      setActivePage((prevActivePage) => prevActivePage - 10);
+      setPageNumLimit((prevPageNumLimit) => prevPageNumLimit - 1);
+    }
+  };
+
+  const handleMetadataChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const formUpdates = {
+      ...projectMetaData,
+      [event.target.name]: event.target.value,
+    };
+    setProjectMetaData(formUpdates);
+  };
+
+  React.useEffect(() => {
+    setPlainText(getTextFromEditorContent(projectContent));
+    setTotalCharacters(plainText.length);
+    setTotalWords(plainText.split(' ').length);
+  }, [projectContent, plainText]);
+
+  const allItems = projects?.response?.items;
+  let filteredItems: ArticleItem[] | undefined = [];
+
+  if (view === 'published') {
+    filteredItems = allItems!.filter((item) => item.is_published === true);
+  } else if (view === 'unpublished') {
+    filteredItems = allItems?.filter((item) => item.is_published === false);
+  } else {
+    filteredItems = allItems;
+  }
+
   return (
     <DashboardLayout>
-      <div>
-        <section className='container px-4 mx-auto'>
-          <div className='sm:flex sm:items-center sm:justify-between'>
-            <div>
-              <div className='flex items-center gap-x-3'>
-                <h2 className='text-lg font-medium'>Projects</h2>
-
-                <span className='px-3 py-1 text-xs bg-rose-700 rounded-full'>
-                  {props.projects?.response?.items?.length} lists
-                </span>
-              </div>
-            </div>
-
-            <div className='flex items-center mt-4 gap-x-3'>
-              <ModalWrapper buttonName='Add Project'>
-                <MetaDataDrawer
-                  set={setProjectMetaData}
-                  // value={articleMetaData}
-                  setShowMetaDataDrawer={setShowMetaDataDrawer}
-                  showMetaDataDrawer={showMetaDataDrawer}
-                />
-
-                <section className='w-full h-screen overflow-y-auto'>
-                  <TextEditor
-                    oldContent={undefined}
-                    value={projectContent}
-                    set={setProjectContent}
-                  />
-                </section>
-
-                <section className='px-4 py-2'>
-                  <button
-                    type='submit'
-                    onClick={() => handleSubmission('draft')}
-                  >
-                    Save as Draft
-                  </button>
-                  <button
-                    type='submit'
-                    onClick={() => handleSubmission('publish')}
-                  >
-                    Publish Article
-                  </button>
-                </section>
-              </ModalWrapper>
-            </div>
+      <section className='container px-4 mx-auto'>
+        {/* Header section */}
+        <div className='sm:flex sm:items-center sm:justify-between'>
+          <ItemsHeader
+            title='Projects'
+            totalItemLength={filteredItems?.length}
+          />
+          <DashboardDisplay
+            handleMetadataChange={handleMetadataChange}
+            itemMetadata={projectMetaData}
+            setItemMetadata={setProjectMetaData}
+            setShowMetadataDrawer={setShowMetaDataDrawer}
+            showMetadataDrawer={showMetaDataDrawer}
+            handleReset={handleReset}
+            textEditorContent={projectContent}
+            setTextEditorContent={setProjectContent}
+            handleSubmission={handleSubmission}
+            totalCharacters={totalCharacters}
+            totalWords={totalWords}
+          />
+        </div>
+        {/* DashboardFilterButtons & Search */}
+        <div className='w-full mt-6 md:flex flex-wrap md:items-center md:justify-between'>
+          <ViewButtons
+            filteredItems={filteredItems}
+            setView={setView}
+            view={view}
+          />
+          <div className='relative flex items-center mt-4 md:mt-0'>
+            <span className='absolute'>
+              <AiOutlineSearch className='w-5 h-5 mx-3 text-gray-400' />
+            </span>
+            <input
+              type='text'
+              placeholder='Search'
+              className='block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
+            />
           </div>
-
-          <div className='mt-6 md:flex md:items-center md:justify-between'>
-            <div className='inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse'>
-              <button className='px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm'>
-                View all
-              </button>
-
-              <button className='px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm hover:bg-gray-100'>
-                Published
-              </button>
-
-              <button className='px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm hover:bg-gray-100'>
-                Not Published
-              </button>
-            </div>
-
-            <div className='relative flex items-center mt-4 md:mt-0'>
-              <span className='absolute'>
-                <AiOutlineSearch className='w-5 h-5 mx-3 text-gray-400' />
-              </span>
-              <input
-                type='text'
-                placeholder='Search'
-                className='block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
-              />
-            </div>
-          </div>
-
-          <div className='flex flex-col mt-6'>
-            <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-              <div className='inline-block min-w-full py-2 align-middle md:px-6 lg:px-8'>
-                <div className='overflow-hidden border border-rose-200 md:rounded-lg'>
-                  <Table
-                    headers={tablesHeaders}
-                    loading={loading}
-                    data={props?.projects?.response?.items}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className='mt-6 sm:flex sm:items-center sm:justify-between '>
-            <div className='text-sm'>
-              Page <span className='font-medium text-gray-200'>1 of 10</span>
-            </div>
-
-            <div className='flex items-center mt-4 gap-x-4 sm:mt-0'>
-              <button className='flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'>
-                <MdArrowBack />
-
-                <span>previous</span>
-              </button>
-
-              <button className='flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'>
-                <span>Next</span>
-                <IoMdArrowForward />
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+        <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 md:px-6 lg:px-8'>
+          <Table
+            headers={articleTableHeaders}
+            loading={loading}
+            data={filteredItems}
+          />
+        </div>
+        {/* DashboardFooter */}
+        <div className='mt-6 sm:flex sm:items-center sm:justify-between '>
+          <CurrentPageInfo
+            currentPageNumber={activePage / 10 + 1}
+            totalPagerNumber={totalPages}
+          />
+          <PaginateButton
+            handlePagination={handlePagination}
+            pageNumberLimit={pageNumLimit}
+            totalPageNumber={totalPages || 1}
+          />
+        </div>
+      </section>
     </DashboardLayout>
   );
 };
 
-export default DashboardProjects;
-
-export const getStaticProps: GetStaticProps<{
-  projects: ProjectResponse;
-}> = async () => {
-  const projects: ProjectResponse = await getAllProjects();
-
-  return {
-    props: JSON.parse(JSON.stringify({ projects })),
-    revalidate: 10,
-  };
-};
+export default DashboardProject;

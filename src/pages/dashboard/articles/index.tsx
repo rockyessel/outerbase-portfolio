@@ -1,75 +1,32 @@
-import ModalWrapper from '@/components/dashboard/modal-wrapper';
 import DashboardLayout from '@/components/dashboard/layout';
 import Table from '@/components/dashboard/articles/table';
 import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { MdArrowBack } from 'react-icons/md';
-import { IoMdArrowForward } from 'react-icons/io';
 import { ArticleItem, ArticleResponse } from '@/interface';
-import {
-  createArticle,
-  encodeObjectToBase64,
-  getAllArticles,
-  getArticlePagination,
-} from '@/utils/api-request';
-import TextEditor from '@/components/dashboard/global/text-editor';
-import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
+import {createArticle, encodeObjectToBase64, getAllArticles, getArticlePagination } from '@/utils/api-request';
 import { OutputData } from '@editorjs/editorjs';
 import serialize from 'serialize-javascript';
-import {
-  IdGen,
-  generateTextToAudioURL,
-  getTextFromEditorContent,
-} from '@/utils/function';
-import axios from 'axios';
+import { IdGen, generateTextToAudioURL, getTextFromEditorContent } from '@/utils/function';
 import DashboardDisplay from '@/components/dashboard/articles/create';
 import ViewButtons from '@/components/dashboard/articles/view-button';
+import ItemsHeader from '@/components/dashboard/articles/items-header';
+import PaginateButton from '@/components/dashboard/articles/paginate-button';
+import CurrentPageInfo from '@/components/dashboard/articles/current-page';
+import { articleTableHeaders, initArticleValue } from '@/utils/constants/articles';
 
-const init = {
-  id: '',
-  image: '',
-  title: '',
-  content: '',
-  slug: '',
-  description: '',
-  caption: '',
-  tags: '',
-  keywords: '',
-  audio_url: '',
-  published_datetime: '',
-  also_published_on: '',
-  is_comment_disabled: false,
-  user_id: '',
-  portfolio_id: '',
-  seen_count: 0,
-  comments_count: 0,
-  liked_count: 0,
-  is_published: false,
-  word_count: 0,
-  character_count: 0,
-  reading_minutes: 1,
-};
 
-interface Props {
-  title: string;
-  totalPages: number;
-  itemsLength: number;
-  currentPageNumber: number;
-  paginationLimit: number;
-  children: React.ReactNode;
-}
+
+
 
 const DashboardArticles = () => {
   const [view, setView] = React.useState('all');
-  const [showMetaDataDrawer, setShowMetaDataDrawer] =
-    React.useState<boolean>(false);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
   const [totalPages, setTotalPages] = React.useState<number>();
   const [activePage, setActivePage] = React.useState<number>(0);
   const [pageNumLimit, setPageNumLimit] = React.useState(1);
   const [articles, setArticles] = React.useState<ArticleResponse>();
-  const [articleMetaData, setArticleMetaData] =
-    React.useState<ArticleItem>(init);
+  const [articleMetaData, setArticleMetaData] = React.useState<ArticleItem>(initArticleValue);
   const [articleContent, setArticleContent] = React.useState<OutputData>();
   const [totalCharacters, setTotalCharacters] = React.useState<number>(0);
   const [totalWords, setTotalWords] = React.useState<number>(0);
@@ -86,17 +43,9 @@ const DashboardArticles = () => {
     });
   }, [activePage]);
 
-  const handleReset = () => setArticleMetaData(init);
+  const handleReset = () => setArticleMetaData(initArticleValue);
 
-  const tablesHeaders = [
-    'Title',
-    'Status',
-    'View Count',
-    'Comments Disabled',
-    'Comments',
-    'Audio',
-    'Edit',
-  ];
+console.log('totalPages: ', totalPages);
 
   const handleSubmission = async (type: string) => {
     const audio = await generateTextToAudioURL(plainText);
@@ -175,14 +124,10 @@ const DashboardArticles = () => {
       <section className='container px-4 mx-auto'>
         {/* Header section */}
         <div className='sm:flex sm:items-center sm:justify-between'>
-          <div className='flex items-center gap-x-3'>
-            <p className='text-lg font-medium'>Articles</p>
-            <span className='px-3 py-1 text-xs bg-rose-700 rounded-full'>
-              {filteredItems?.length} lists
-            </span>
-          </div>
-
-          {/* Create Article */}
+          <ItemsHeader
+            title='Article'
+            totalItemLength={filteredItems?.length}
+          />
           <DashboardDisplay
             handleMetadataChange={handleMetadataChange}
             itemMetadata={articleMetaData}
@@ -196,65 +141,14 @@ const DashboardArticles = () => {
             totalCharacters={totalCharacters}
             totalWords={totalWords}
           />
-          {/* <div className='flex items-center mt-4 gap-x-3'>
-            <ModalWrapper buttonName='Create Article'>
-              <MetaDataDrawer
-                handleMetadataChange={handleMetadataChange}
-                stateValue={articleMetaData}
-                setStateValue={setArticleMetaData}
-                setShowMetaDataDrawer={setShowMetaDataDrawer}
-                showMetaDataDrawer={showMetaDataDrawer}
-                handleReset={handleReset}
-              />
-
-              <section className='w-full h-screen overflow-y-auto'>
-                <TextEditor
-                  oldContent={undefined}
-                  value={articleContent}
-                  set={setArticleContent}
-                />
-              </section>
-
-              {!showMetaDataDrawer && (
-                <section className='px-4 py-2 flex items-center justify-between'>
-                  <div>
-                    <button
-                      type='submit'
-                      onClick={() => handleSubmission('draft')}
-                      className='inline-flex m-5 items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-transparent border border-rose-700 rounded-md sm:w-auto gap-x-2 hover:bg-rose-700 hover:text-white hover:border-rose-700 active:ring-2 active:ring-rose-700'
-                    >
-                      Save as Draft
-                    </button>
-                    <button
-                      type='submit'
-                      onClick={() => handleSubmission('publish')}
-                      className='inline-flex m-5 items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700'
-                    >
-                      Publish Article
-                    </button>
-                  </div>
-
-                  <div className='inline-flex items-center gap-2'>
-                    <p>Characters: {totalCharacters}</p>
-                    <p>Words: {totalCharacters === 0 ? 0 : totalWords}</p>
-                  </div>
-                </section>
-              )}
-            </ModalWrapper>
-          </div> */}
         </div>
-
         {/* DashboardFilterButtons & Search */}
         <div className='w-full mt-6 md:flex flex-wrap md:items-center md:justify-between'>
-          {/* Buttons */}
-
           <ViewButtons
             filteredItems={filteredItems}
             setView={setView}
             view={view}
           />
-
-          {/* Search */}
           <div className='relative flex items-center mt-4 md:mt-0'>
             <span className='absolute'>
               <AiOutlineSearch className='w-5 h-5 mx-3 text-gray-400' />
@@ -266,52 +160,24 @@ const DashboardArticles = () => {
             />
           </div>
         </div>
-
-        {/* Table */}
         <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 md:px-6 lg:px-8'>
           <Table
-            headers={tablesHeaders}
+            headers={articleTableHeaders}
             loading={loading}
             data={filteredItems}
           />
         </div>
-
         {/* DashboardFooter */}
         <div className='mt-6 sm:flex sm:items-center sm:justify-between '>
-          {/* Number of page */}
-          <div className='text-sm'>
-            Page{' '}
-            <span className='font-medium text-gray-200'>
-              {activePage / 10 + 1} of {totalPages}
-            </span>
-          </div>
-
-          {/* PaginateButton */}
-          <div className='flex items-center mt-4 gap-x-4 sm:mt-0'>
-            <button
-              type='button'
-              title='Previous'
-              onClick={() => handlePagination('previous')}
-              className={`flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700   ${
-                pageNumLimit === 1 ? 'cursor-not-allowed' : ''
-              }`}
-            >
-              <MdArrowBack />
-              <span>previous</span>
-            </button>
-
-            <button
-              type='button'
-              title='Next'
-              onClick={() => handlePagination('next')}
-              className={`flex items-center justify-center w-1/2 px-5 py-2 text-sm capitalize transition-colors duration-200 bg-rose-700 border rounded-md sm:w-auto gap-x-2 hover:bg-transparent hover:text-rose-700 hover:border-rose-700 active:ring-2 active:ring-rose-700 ${
-                pageNumLimit === totalPages! ? 'cursor-not-allowed' : ''
-              }`}
-            >
-              <span>Next</span>
-              <IoMdArrowForward />
-            </button>
-          </div>
+          <CurrentPageInfo
+            currentPageNumber={activePage / 10 + 1}
+            totalPagerNumber={totalPages}
+          />
+          <PaginateButton
+            handlePagination={handlePagination}
+            pageNumberLimit={pageNumLimit}
+            totalPageNumber={totalPages || 1}
+          />
         </div>
       </section>
     </DashboardLayout>
