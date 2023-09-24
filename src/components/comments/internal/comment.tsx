@@ -1,11 +1,11 @@
 import React from 'react';
-import CreateCommentInput from '../create-input';
 import CommentCard from '../card';
 import { CommentProps } from '@/interface';
+import CreateCommentInput from '../create-input';
 
 interface Props {
   commentHistory: CommentProps[];
-  articleId: string;
+  id: string;
 }
 
 const MainComment = (props: Props) => {
@@ -20,7 +20,7 @@ const MainComment = (props: Props) => {
           </div>
           <CreateCommentInput
             type='create'
-            articleId={props.articleId}
+            id={props.id}
             parentCommentId={undefined}
             style={undefined}
           />

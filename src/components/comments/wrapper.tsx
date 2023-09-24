@@ -1,11 +1,11 @@
 import React from 'react';
 import CommentSystemRender from './render';
-import CommentSystemSelector from './selector';
 import { CommentProps } from '@/interface';
+import CommentSystemSelector from './selector';
 
 interface Props {
   commentHistory: CommentProps[];
-  articleId: string;
+  id: string;
 }
 
 const CommentEngineWrapper = (props: Props) => {
@@ -14,7 +14,7 @@ const CommentEngineWrapper = (props: Props) => {
     <section>
       <CommentSystemSelector setCommentSystem={setCommentSystem} />
       <CommentSystemRender
-        articleId={props.articleId}
+        id={props.id}
         commentHistory={props.commentHistory}
         systemType={commentSystem}
       />

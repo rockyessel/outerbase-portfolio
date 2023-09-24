@@ -1,6 +1,7 @@
-import { CommentProps } from '@/interface';
 import React from 'react';
 import CommentInput from './create-input';
+import { CommentProps } from '@/interface';
+import { useRouter } from 'next/router';
 
 interface CommentCardProps {
   comment: CommentProps | undefined; // Replace CommentProps with the actual type
@@ -11,9 +12,14 @@ const CommentCard = ({ comment }: CommentCardProps) => {
   const [showCommentInput, setShowCommentInput] = React.useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  // const isProjectPath = router.asPath.includes('projects') ? comment!.project_id : '';
+  const isArticlePath = router.asPath.includes('articles')
+
+  
 
   // Close the dropdown when clicking outside
-  const handleClickOutside = (e) => {
+  const handleClickOutside = (e:any) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
       setIsDropdownOpen(false);
     }
@@ -57,7 +63,7 @@ const CommentCard = ({ comment }: CommentCardProps) => {
           type='button'
         >
           <svg
-            className={`w-4 h-4 ${isDropdownOpen ? 'rotate-180' : ''}`} // Rotate the arrow when the dropdown is open
+            className={`w-4 h-4 `}
             aria-hidden='true'
             xmlns='http://www.w3.org/2000/svg'
             fill='currentColor'
@@ -128,8 +134,8 @@ const CommentCard = ({ comment }: CommentCardProps) => {
         {showCommentInput && (
           <CommentInput
             type='reply'
-            articleId={comment!.article_id}
-            parentCommentId={comment!.comment_id} // Pass the comment ID as the parentCommentId
+            id={isArticlePath ? comment!.article_id : comment!.project_id}
+            parentCommentId={comment!.comment_id} // Passing the comment ID as the parentCommentId
             style={undefined}
           />
         )}

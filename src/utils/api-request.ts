@@ -187,7 +187,7 @@ const createContent = async (table: string, content: string, id: number) => {
     );
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     return data;
   } catch (error) {
@@ -252,7 +252,7 @@ export const getImageURL = async (files: File) => {
     formData.append('file', files);
 
     const response = await axios.post<{ url: string }>(
-      `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}/api/v1/file`,
       formData,
       {
         headers: {
@@ -261,7 +261,33 @@ export const getImageURL = async (files: File) => {
       }
     );
 
-    console.log('response.data.urls', response.data.url);
+    // console.log('response.data.urls', response.data.url);
+    return response.data.url; // Assuming the backend returns an array of URLs for each uploaded file
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    throw error;
+  }
+};
+
+
+export const getMultipleFileURL = async (files: File[]):Promise<string[]> => {
+  try {
+    const formData = new FormData();
+      files.forEach((file) => {
+        formData.append(`files`, file);
+      });
+
+    const response = await axios.post<{ url: string[] }>(
+      `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL_GENERATOR!}/api/v1/files`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    // console.log('response.data.urls', response.data.url);
     return response.data.url; // Assuming the backend returns an array of URLs for each uploaded file
   } catch (error) {
     console.error('Error uploading images:', error);
@@ -281,6 +307,7 @@ export const encodeObjectToBase64 = (obj: any) => {
 
 // Decode a Base64-encoded string back to a JavaScript object
 export const decodeBase64ToObject = (base64: string) => {
+  // console.log('base64: ', base64)
   const binaryString = atob(base64);
   const utf8Bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
@@ -293,7 +320,7 @@ export const decodeBase64ToObject = (base64: string) => {
 
 export const createArticle = async (articleData: ArticleItem) => {
   try {
-    console.log('createArticle', { ...articleData });
+    // console.log('createArticle', { ...articleData });
     const { data } = await axios.post(
       `https://minimum-aqua.cmd.outerbase.io/article/create`,
       { ...articleData }

@@ -1,14 +1,8 @@
 import DashboardLayout from '@/components/dashboard/layout';
-import Table from '@/components/dashboard/articles/table';
 import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { ArticleItem, ArticleResponse } from '@/interface';
-import {
-  createArticle,
-  encodeObjectToBase64,
-  getAllArticles,
-  getArticlePagination,
-} from '@/utils/api-request';
+import { ProjectItem, ProjectResponse } from '@/interface';
+
 import { OutputData } from '@editorjs/editorjs';
 import serialize from 'serialize-javascript';
 import {
@@ -21,29 +15,37 @@ import ViewButtons from '@/components/dashboard/articles/view-button';
 import ItemsHeader from '@/components/dashboard/articles/items-header';
 import PaginateButton from '@/components/dashboard/articles/paginate-button';
 import CurrentPageInfo from '@/components/dashboard/articles/current-page';
+import { articleTableHeaders } from '@/utils/constants/articles';
 import {
-  articleTableHeaders,
-  initArticleValue,
-} from '@/utils/constants/articles';
-import { getAllProjects, getProjectTotalPageNumber } from '@/utils/outerbase-req/projects';
+  createProject,
+  getAllProjects,
+  getProjectTotalPageNumber,
+} from '@/utils/outerbase-req/projects';
+import { initProjectValue } from '@/utils/constants/projects';
+import { encodeObjectToBase64 } from '@/utils/api-request';
+import ProjectTable from '@/components/dashboard/projects/table';
+import ProjectMetadata from '@/components/dashboard/projects/metadata';
 
 const DashboardProject = () => {
   const [view, setView] = React.useState('all');
-  const [showMetaDataDrawer, setShowMetaDataDrawer] = React.useState<boolean>(false);
+  const [showMetaDataDrawer, setShowMetaDataDrawer] =
+    React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
   const [totalPages, setTotalPages] = React.useState<number>();
   const [activePage, setActivePage] = React.useState<number>(0);
   const [pageNumLimit, setPageNumLimit] = React.useState(1);
-  const [projects, setProjects] = React.useState<ArticleResponse>();
+  const [projects, setProjects] = React.useState<ProjectResponse>();
   const [projectMetaData, setProjectMetaData] =
-    React.useState<ArticleItem>(initArticleValue);
+    React.useState<ProjectItem>(initProjectValue);
   const [projectContent, setProjectContent] = React.useState<OutputData>();
   const [totalCharacters, setTotalCharacters] = React.useState<number>(0);
   const [totalWords, setTotalWords] = React.useState<number>(0);
   const [plainText, setPlainText] = React.useState<string>('');
 
   React.useEffect(() => {
-    getProjectTotalPageNumber().then((totalPageNum) => setTotalPages(totalPageNum));
+    getProjectTotalPageNumber().then((totalPageNum) =>
+      setTotalPages(totalPageNum)
+    );
   });
 
   React.useEffect(() => {
@@ -53,9 +55,9 @@ const DashboardProject = () => {
     });
   }, [activePage]);
 
-  const handleReset = () => setProjectMetaData(initArticleValue);
+  const handleReset = () => setProjectMetaData(initProjectValue);
 
-  console.log('totalPages: ', totalPages);
+  console.log('projectMetaData: ', projectMetaData);
 
   const handleSubmission = async (type: string) => {
     const audio = await generateTextToAudioURL(plainText);
@@ -68,21 +70,22 @@ const DashboardProject = () => {
     projectMetaData.word_count = totalWords;
     projectMetaData.character_count = totalCharacters;
     projectMetaData.reading_minutes = totalReadingMinutes;
-    projectMetaData.id = IdGen('ARTICLE');
+    projectMetaData.id = IdGen('PROJECT');
     projectMetaData.audio_url = audio;
+    projectMetaData.published_datetime = new Date().toISOString();
 
     // Make sure there's no empty string inn projectContent
     const isContentAdded = projectMetaData.content.length > 10; // Denoting that content is not empty.;
 
     switch (type) {
       case 'draft':
-        if (isContentAdded) createArticle(projectMetaData);
+        if (isContentAdded) createProject(projectMetaData);
         console.log('projectMetaData', projectMetaData);
         break;
       case 'publish':
         projectMetaData.is_published = true;
         console.log('projectMetaData', projectMetaData);
-        if (isContentAdded) createArticle(projectMetaData);
+        if (isContentAdded) createProject(projectMetaData);
         break;
       default:
         console.log('article handleSubmission invalid type.');
@@ -119,7 +122,7 @@ const DashboardProject = () => {
   }, [projectContent, plainText]);
 
   const allItems = projects?.response?.items;
-  let filteredItems: ArticleItem[] | undefined = [];
+  let filteredItems: ProjectItem[] | undefined = [];
 
   if (view === 'published') {
     filteredItems = allItems!.filter((item) => item.is_published === true);
@@ -138,19 +141,28 @@ const DashboardProject = () => {
             title='Projects'
             totalItemLength={filteredItems?.length}
           />
+
           <DashboardDisplay
-            handleMetadataChange={handleMetadataChange}
-            itemMetadata={projectMetaData}
-            setItemMetadata={setProjectMetaData}
-            setShowMetadataDrawer={setShowMetaDataDrawer}
-            showMetadataDrawer={showMetaDataDrawer}
-            handleReset={handleReset}
+            oldContent={undefined}
+            modalWrapperButtonName='Add a Project'
+            draftButtonTitle='Saves as Draft'
+            postButtonTitle='Publish Project'
             textEditorContent={projectContent}
             setTextEditorContent={setProjectContent}
             handleSubmission={handleSubmission}
             totalCharacters={totalCharacters}
             totalWords={totalWords}
-          />
+            showMetadataDrawer={showMetaDataDrawer}
+          >
+            <ProjectMetadata
+              handleMetadataChange={handleMetadataChange}
+              stateValue={projectMetaData}
+              setStateValue={setProjectMetaData}
+              setShowMetaDataDrawer={setShowMetaDataDrawer}
+              showMetaDataDrawer={showMetaDataDrawer}
+              handleReset={handleReset}
+            />
+          </DashboardDisplay>
         </div>
         {/* DashboardFilterButtons & Search */}
         <div className='w-full mt-6 md:flex flex-wrap md:items-center md:justify-between'>
@@ -171,7 +183,7 @@ const DashboardProject = () => {
           </div>
         </div>
         <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 md:px-6 lg:px-8'>
-          <Table
+          <ProjectTable
             headers={articleTableHeaders}
             loading={loading}
             data={filteredItems}

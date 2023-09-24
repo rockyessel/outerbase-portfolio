@@ -1,12 +1,12 @@
-import { CommentProps } from '@/interface';
-import { IdGen } from '@/utils/function';
-import { createComment, createReply } from '@/utils/outerbase-req/comments';
-import { useRouter } from 'next/router';
 import React from 'react';
+import { useRouter } from 'next/router';
+import { IdGen } from '@/utils/function';
+import { CommentProps } from '@/interface';
+import { createComment, createReply } from '@/utils/outerbase-req/comments';
 
 interface Props {
   type: string;
-  articleId: string;
+  id: string;
   parentCommentId: string | undefined;
   style: string | undefined;
 }
@@ -14,40 +14,42 @@ interface Props {
 const CreateCommentInput = (props: Props) => {
   const [commentContent, setCommentContent] = React.useState('');
   const router = useRouter();
+  const isProjectPath = router.asPath.includes('projects') ? props.id : '';
+  const isArticlePath = router.asPath.includes('articles') ? props.id : '';
+
+  console.log('props.id: ', props.id);
+
+  console.log('isProjectPath: ', isProjectPath);
+  console.log('isArticlePath: ', isArticlePath);
 
   const handleSubmission = async (event: React.SyntheticEvent) => {
-    event.preventDefault();
-
-    let obj: CommentProps;
-
     try {
-      if (props.type === 'create') {
-        const commentId = IdGen('comment');
-        obj = {
-          reply_id: '',
-          comment_id: commentId,
-          article_id: props.articleId,
-          user_id: 'User 1',
-          content: commentContent,
-          parent_comment_id: '',
-          created_at: new Date().toISOString(),
-        };
+      event.preventDefault();
+      let obj: CommentProps;
+      obj = {
+        reply_id: '',
+        comment_id: '',
+        article_id: '',
+        project_id: '',
+        user_id: 'User 1',
+        content: commentContent,
+        parent_comment_id: '',
+        created_at: new Date().toISOString(),
+      };
 
+      if (props.type === 'create') {
+        obj.comment_id =  IdGen('COMMENT');
+        obj.article_id = isArticlePath;
+        obj.project_id = isProjectPath;
+        console.log('Create Object: ', obj);
         await createComment(obj);
       }
 
       if (props.type === 'reply') {
-        const replyId = IdGen('reply');
-        obj = {
-          comment_id: '',
-          reply_id: replyId,
-          article_id: props.articleId,
-          user_id: 'User 1',
-          content: commentContent,
-          parent_comment_id: props.parentCommentId,
-          created_at: new Date().toISOString(),
-        };
-
+        obj.reply_id = IdGen('REPLY');
+        obj.parent_comment_id = props.parentCommentId;
+        obj.article_id = isArticlePath;
+        obj.project_id = isProjectPath;
         await createReply(obj);
       }
 

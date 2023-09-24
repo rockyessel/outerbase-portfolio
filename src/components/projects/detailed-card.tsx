@@ -4,30 +4,40 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiExternalLink } from 'react-icons/fi';
+import { decodeBase64ToObject, deserialize } from '@/utils/api-request';
+import { OutputData } from '@editorjs/editorjs';
+import EditorOutput from '../EditorOutput';
 
 interface Props {
   data: ProjectItem;
 }
 
 const ProjectDetailsCard = (props: Props) => {
+  console.log(props)
   const [image, setImage] = React.useState<number>(0);
   const tools = props.data?.tags?.split(',')?.map((tool) => tool.trim().toLocaleLowerCase());
-  const images = props.data?.other_image?.split(',')?.map((image) => image.trim());
+  const images = props.data?.images?.split(',')?.map((image) => image.trim());
+  const decodedContent = decodeBase64ToObject(props.data?.content);
+  console.log('raw content: ', props.data?.content);
+  console.log('decodedContent: ', decodedContent);
+  const deserializeContent: OutputData = deserialize(decodedContent);
+  console.log('deserializeContent: ', deserializeContent);
+  
 
   return (
     <React.Fragment>
       <header className='flex flex-col gap-2'>
         <h1 className='font-extrabold max_screen:text-4xl text-7xl capitalize'>
-          {props.data?.name}
+          {props.data?.title}
         </h1>
 
         <div className='flex items-center justify-between gap-2 w-full flex-wrap mb-2'>
-          <a target={`_blank`} href={props.data?.live_url}>
+          <a target={`_blank`} href={props.data?.live_demo_url}>
             <span className='inline-flex items-center gap-1 p-2 w-fit border border-rose-500 text-white rounded-md'>
               See Live <FiExternalLink />
             </span>
           </a>
-          <a target={`_blank`} href={props.data?.source_code}>
+          <a target={`_blank`} href={props.data?.github_repo}>
             <span className='inline-flex items-center gap-1 p-2 w-fit border border-rose-500 text-white rounded-md'>
               Github <FiExternalLink />
             </span>
@@ -76,15 +86,13 @@ const ProjectDetailsCard = (props: Props) => {
               width={1000}
               height={1000}
               onClick={() => setImage(index)}
-              alt={props.data?.name}
+              alt={props.data?.title}
               priority
             />
           ))}
         </div>
         <div>
-          <article className='prose-xl mb-5 text-gray-300'>
-            {props.data?.description}
-          </article>
+          <EditorOutput content={deserializeContent} />
         </div>
       </main>
       <footer></footer>

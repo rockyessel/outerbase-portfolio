@@ -13,6 +13,7 @@ import ItemsHeader from '@/components/dashboard/articles/items-header';
 import PaginateButton from '@/components/dashboard/articles/paginate-button';
 import CurrentPageInfo from '@/components/dashboard/articles/current-page';
 import { articleTableHeaders, initArticleValue } from '@/utils/constants/articles';
+import MetaDataDrawer from '@/components/dashboard/global/metadata-drawer';
 
 
 
@@ -129,18 +130,26 @@ console.log('totalPages: ', totalPages);
             totalItemLength={filteredItems?.length}
           />
           <DashboardDisplay
-            handleMetadataChange={handleMetadataChange}
-            itemMetadata={articleMetaData}
-            setItemMetadata={setArticleMetaData}
-            setShowMetadataDrawer={setShowMetaDataDrawer}
-            showMetadataDrawer={showMetaDataDrawer}
-            handleReset={handleReset}
+            oldContent={undefined}
+            modalWrapperButtonName='Create Article'
+            draftButtonTitle='Saves as Draft'
+            postButtonTitle='Publish Article'
             textEditorContent={articleContent}
             setTextEditorContent={setArticleContent}
             handleSubmission={handleSubmission}
             totalCharacters={totalCharacters}
             totalWords={totalWords}
-          />
+            showMetadataDrawer={showMetaDataDrawer}
+          >
+            <MetaDataDrawer
+              handleMetadataChange={handleMetadataChange}
+              stateValue={articleMetaData}
+              setStateValue={setArticleMetaData}
+              setShowMetaDataDrawer={setShowMetaDataDrawer}
+              showMetaDataDrawer={showMetaDataDrawer}
+              handleReset={handleReset}
+            />
+          </DashboardDisplay>
         </div>
         {/* DashboardFilterButtons & Search */}
         <div className='w-full mt-6 md:flex flex-wrap md:items-center md:justify-between'>

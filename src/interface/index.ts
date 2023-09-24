@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from 'querystring';
 export interface DefaultMetaDataProps {
   description: string;
   title: string;
-  image: string;
+  s: string;
   type: string;
   alt: string;
   keywords: string;
@@ -106,18 +106,47 @@ export interface ProjectResponse {
 }
 
 export interface ProjectItem {
-  description: string;
-  short_description: string;
+  id: string;
+  images: string; // Array of image URLs
+  title: string;
+  content: string;
   slug: string;
-  id: number;
-  live_url: string;
-  main_image: string;
-  name: string;
-  other_image: string;
-  project_type: string;
-  source_code: string;
-  tags: string;
+  description: string;
+  caption: string;
+  tags: string; // Array of tags or keywords
+  keywords: string; // Array of keywords
+  audio_url: string; // URL to audio content
+  published_datetime: string; // Date and time of publication
+  is_comment_disabled: boolean;
+  article_id: string; // Referencing an article
+  user_id: string; // Referencing a user
+  portfolio_id: string; // Referencing a portfolio
+  seen_count: number;
+  comments_count: number;
+  liked_count: number;
+  is_published: boolean;
+  word_count: number;
+  character_count: number;
+  reading_minutes: number;
+  technologies: string; // Array of technologies used in the project
+  github_repo: string; // URL to the GitHub repository
+  live_demo_url: string; // URL to live demo or project website
+  video_url: string; // URL to video demonstration
+  contributors: string; // Array of contributors or team members
+  licenses: string; // Array of licenses or permissions
+  dependencies: string; // Array of project dependencies
+  frameworks: string; // Array of frameworks used
+  platform: string; // The platform or environment the project runs on
+  project_status: string; // Status of the project
+  support_email: string; // Contact email for support
+  // issue_tracker_url: string; // URL to the issue tracker
+  // release_notes_url: string; // URL to release notes
+  deployment_platform: string; // Platform for deployment
+  deployment_status: string; // Deployment status
+  demo_credentials: string; // Demo login credentials
+  certificate_url: string; // Demo login credentials
 }
+
 
 export interface SlugResponse {
   success: boolean;
@@ -208,17 +237,18 @@ export interface User {
   name: string;
   username: string;
   email: string;
-  image: string;
+  s: string;
 }
 
 
 export interface CommentProps {
   comment_id: string;
-  reply_id: string | null;
+  reply_id: string | '';
   user_id: string;
   content: string;
   article_id: string;
-  parent_comment_id?: string | null;
+  project_id: string;
+  parent_comment_id?: string | '';
   created_at: string;
   replies?: CommentProps[];
-}
+}[]

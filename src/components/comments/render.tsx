@@ -1,12 +1,12 @@
 import React from 'react';
-import DisqusCommentsEngine from './external/disqus';
-import MainComment from './internal/comment';
 import { CommentProps } from '@/interface';
+import MainComment from './internal/comment';
+import DisqusCommentsEngine from './external/disqus';
 
 interface Props {
   systemType: string;
   commentHistory: CommentProps[];
-  articleId: string;
+  id: string;
 }
 
 const CommentSystemRender = (props: Props) => {
@@ -14,7 +14,7 @@ const CommentSystemRender = (props: Props) => {
     case 'Internal':
       return (
         <MainComment
-          articleId={props.articleId}
+          id={props.id}
           commentHistory={props.commentHistory}
         />
       );

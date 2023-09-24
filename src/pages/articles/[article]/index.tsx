@@ -5,11 +5,22 @@ import { getFormatCommentsAndReplies } from '@/utils/outerbase-req/comments';
 import ArticleDetailedCard from '@/components/articles/detailed-card';
 import { ArticleItem, CommentProps, CommonPath, Params } from '@/interface';
 import { getAllArticlesSlugs, getArticleBySlug } from '@/utils/api-request';
-import { GetStaticProps, GetStaticPaths, InferGetServerSidePropsType } from 'next';
-import { increaseArticleViewCount, updateCommentOnLoad } from '@/utils/outerbase-req/articles';
+import {
+  GetStaticProps,
+  GetStaticPaths,
+  InferGetServerSidePropsType,
+} from 'next';
+import {
+  increaseArticleViewCount,
+  updateCommentOnLoad,
+} from '@/utils/outerbase-req/articles';
 
-const ArticleDetailedPage = (props: InferGetServerSidePropsType<typeof getStaticProps>) => {
+const ArticleDetailedPage = (
+  props: InferGetServerSidePropsType<typeof getStaticProps>
+) => {
   const [hasIncremented, setHasIncremented] = React.useState<boolean>(false);
+
+  console.log(props)
 
   // Update the comment count after a comment is made.
   React.useEffect(() => {
@@ -39,9 +50,11 @@ const ArticleDetailedPage = (props: InferGetServerSidePropsType<typeof getStatic
     <main className=' px-4 lg:px-14 xl:px-20 2xl:px-40 py-2 '>
       <ArticleHeader data={props.articleData} />
       <ArticleDetailedCard data={props.articleData} />
-      {props.comments && (
+      {props.comments && props.articleData.is_comment_disabled === true ? (
+        <p>The author disabled comment for this post.</p>
+      ) : (
         <CommentEngineWrapper
-          articleId={props.articleData?.id}
+          id={props.articleData?.id}
           commentHistory={props.comments}
         />
       )}
@@ -53,14 +66,19 @@ export default ArticleDetailedPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const articlePath: CommonPath = await getAllArticlesSlugs();
-  const paths = articlePath?.response?.items?.map((path) => ({params: { article: path.slug }}));
+  const paths = articlePath?.response?.items?.map((path) => ({
+    params: { article: path.slug },
+  }));
   return { paths, fallback: true };
 };
 
-export const getStaticProps: GetStaticProps<{articleData: ArticleItem; comments: CommentProps[]}> = async (context) => {
+export const getStaticProps: GetStaticProps<{
+  articleData: ArticleItem;
+  comments: CommentProps[];
+}> = async (context) => {
   const { article }: any = context.params as Params;
   const articleData: ArticleItem = await getArticleBySlug(article);
-  const comments: CommentProps[] = await getFormatCommentsAndReplies(articleData.id);
+  const comments = await getFormatCommentsAndReplies(articleData.id,'articles');
   if (!articleData || !comments) return { notFound: true };
   return {
     props: JSON.parse(JSON.stringify({ articleData, comments })),
