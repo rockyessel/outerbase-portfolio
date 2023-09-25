@@ -36,7 +36,7 @@ const Modal = (props: any) => {
   return (
     <div
       ref={props.modalRef} // Assign the ref to the modal's container
-      className='px-4 py-2 w-[200px] border-[1px] border-opacity-50 border-rose-700 rounded-lg shadow-lg shadow-rose-500 cursor-pointer text-white bg-black'
+      className='px-4 py-2 w-[200px] border-[1px] border-opacity-50 border-rose-700 rounded-lg cursor-pointer text-white bg-[#131b24]'
       style={styles}
     >
       <div className='w-full flex flex-col gap-2'>
@@ -48,7 +48,7 @@ const Modal = (props: any) => {
         </div>
         <div className='p-1 rounded-lg group ring-[1px] ring-rose-700 ring-opacity-50 hover:ring-2 hover:ring-rose-600 '>
           <span className='flex items-center gap-2 m-0'>
-            <FaWhatsapp className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl hover:border-white hover:text-rose-700' />
+            <FaWhatsapp className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl group-hover:border-white group-hover:text-rose-700' />
             <span className='text-[12px] text-gray-200'>
               Share with a friend
             </span>
@@ -56,7 +56,7 @@ const Modal = (props: any) => {
         </div>
         <div className='p-1 rounded-lg group ring-[1px] ring-rose-700 ring-opacity-50 hover:ring-2 hover:ring-rose-600 '>
           <span className='flex items-center gap-2 m-0'>
-            <AiOutlineReddit className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl hover:border-white hover:text-rose-700' />
+            <AiOutlineReddit className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl group-hover:border-white group-hover:text-rose-700' />
             <span className='text-[12px] text-gray-200'>
               Share with a community
             </span>
@@ -64,7 +64,7 @@ const Modal = (props: any) => {
         </div>
         <div className='p-1 rounded-lg group ring-[1px] ring-rose-700 ring-opacity-50 hover:ring-2 hover:ring-rose-600 '>
           <span className='flex items-center gap-2 m-0'>
-            <MdOutlineContentCopy className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl hover:border-white hover:text-rose-700' />
+            <MdOutlineContentCopy className='p-1 rounded-lg border-[1px] border-rose-700 text-4xl group-hover:border-white group-hover:text-rose-700' />
             <span className='text-[12px] text-gray-200'>Copy!</span>
           </span>
         </div>
