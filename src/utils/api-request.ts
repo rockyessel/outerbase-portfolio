@@ -105,14 +105,6 @@ export const getAllProjects = async () => {
   }
 };
 
-export const getArticleBySlug = async (slug: string) => {
-  const { data } = await axios.get(
-    `https://minimum-aqua.cmd.outerbase.io/data/slug?slug=${slug}`
-  );
-  const article = data.response?.items?.[0];
-
-  return article;
-};
 
 export const getAllArticlesSlugs = async () => {
   const { data } = await axios.get(
@@ -133,9 +125,9 @@ export const CommonPathProps = async (table: string) => {
   }
 };
 
-export const getDataBySlug = async (table: string, slug: string) => {
+export const getArticleBySlug = async ( slug: string) => {
   const { data } = await axios.get(
-    `https://minimum-aqua.cmd.outerbase.io/data/slug?table=${table}&slug=${slug}`
+    `https://minimum-aqua.cmd.outerbase.io/data/slug?slug=${slug}`
   );
   const article = data.response?.items?.[0];
 
@@ -229,12 +221,9 @@ export const getContent = async (): Promise<OutputData | undefined> => {
     );
     if (data.success) {
       const doesContentExist = data.response.items[0]?.editorcontentoutput;
-      // console.log('doesContentExist', doesContentExist);
       if (doesContentExist) {
         const json = decodeBase64ToObject(doesContentExist);
         const content = deserialize(json);
-        // console.log('content', content);
-        // console.log('json', json);
         if (content) {
           return content;
         }

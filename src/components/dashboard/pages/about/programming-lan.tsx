@@ -9,6 +9,7 @@ const ProgrammingLanguageDropdown = (props: Props) => {
   console.log(props);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -46,13 +47,25 @@ const ProgrammingLanguageDropdown = (props: Props) => {
     );
   };
 
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      )
+        setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <div className='relative inline-block text-left'>
       <div>
         <button
           onClick={toggleDropdown}
           type='button'
-          className='inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'
+          className='inline-flex justify-center w-[48] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'
           id='options-menu'
           aria-haspopup='true'
           aria-expanded='true'
@@ -77,7 +90,10 @@ const ProgrammingLanguageDropdown = (props: Props) => {
       </div>
 
       {isOpen && (
-        <div className='origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg ring-1 ring-black ring-opacity-5 h-56 overflow-y-auto bg-[#131b24]'>
+        <div
+          ref={dropdownRef}
+          className='origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg ring-1 ring-black ring-opacity-5 h-56 overflow-y-auto bg-[#131b24] z-[1000]'
+        >
           <div
             className='py-1'
             role='menu'
@@ -88,7 +104,7 @@ const ProgrammingLanguageDropdown = (props: Props) => {
               <button
                 key={language.value}
                 onClick={() => handleLanguageSelect(language.value)}
-                className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left flex items-center'
+                className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left flex items-center'
                 role='menuitem'
               >
                 <img
@@ -113,9 +129,8 @@ const ProgrammingLanguageDropdown = (props: Props) => {
               <button
                 title={language}
                 key={language}
-                onClick={() => handleLanguageSelect(language)}
-                className='inline-flex items-center gap-1 border-[1px] w-fit p-1 rounded-lg border-rose-700 border-opacity-50 hover:ring-2 hover:ring-rose-500'
-                role='menuitem'
+                onDoubleClick={() => removeLanguage(language)}
+                className='inline-flex items-center gap-1 border-[1px] capitalize w-fit p-1 rounded-lg border-rose-700 border-opacity-50 hover:ring-2 hover:ring-rose-500'
               >
                 <img
                   src={getLanguageLogoUrl(language)}
@@ -133,12 +148,3 @@ const ProgrammingLanguageDropdown = (props: Props) => {
 };
 
 export default ProgrammingLanguageDropdown;
-
-{
-  /* <button
-                  onClick={() => removeLanguage(language)}
-                  className='text-red-600 hover:text-red-800'
-                >
-                  Remove
-                </button> */
-}

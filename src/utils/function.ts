@@ -27,7 +27,6 @@ export const createSlug = (input: string): string => {
     .replace(/-+/g, '-') // Replace consecutive hyphens with a single hyphen
     .toLowerCase() // Convert to lowercase
     .trim(); // Remove leading and trailing spaces
-
   return slug;
 };
 
@@ -35,39 +34,30 @@ export const escapeDoubleQuotes = (jsonData: string): string => {
   console.log('jsonData: ', jsonData);
   // Use regular expressions to replace double quotes with escaped double quotes
   const re = jsonData.replace(/"/g, '\\"');
-
   console.log('Changed: ', re);
-
   return re;
 };
 
-export const getTextFromEditorContent = (
-  editorContent: OutputData | undefined
-) => {
+export const getTextFromEditorContent = (editorContent: OutputData | undefined) => {
   let plainText = '';
-
   if (editorContent && editorContent.blocks) {
     editorContent.blocks.forEach((block) => {
       if (block.type === 'paragraph') {
-        // Replace HTML entities and strip HTML tags
+        // Replacing HTML entities and strip HTML tags
         const text = block.data.text.replace(/<[^>]*>?/gm, '');
         const decodedText = decodeHtmlEntities(text);
-
-        // Append the decoded text to the plainText string
+        // Appending the decoded text to the plainText string
         plainText += decodedText + '\n';
       } else if (block.type === 'header') {
-        // Replace HTML entities and strip HTML tags for headers
+        // Replacing HTML entities and strip HTML tags for headers
         const text = block.data.text.replace(/<[^>]*>?/gm, '');
         const decodedText = decodeHtmlEntities(text);
-
-        // Append the decoded text to the plainText string
+        // Appending the decoded text to the plainText string
         plainText += decodedText + '\n';
       }
-      // Add more conditions for other block types if needed
     });
   }
-
-  return plainText.trim(); // Remove leading/trailing whitespace
+  return plainText.trim()
 };
 
 // Helper function to decode HTML entities
@@ -89,23 +79,18 @@ export const IdGen = (type: string): string => {
   const characters = shuffleString(
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   );
-
   // Determining the length of the random string
   const length = Math.floor(Math.random() * 6) + 5;
-
   // Array to track used characters
   const usedChars: string[] = [];
-
   // Building the random string character by character
   let result = '';
   for (let i = 0; i < length; i++) {
     let index: number;
-
     // Selecting a random character that has not been used before
     do {
       index = Math.floor(Math.random() * characters.length);
     } while (usedChars.includes(characters[index]));
-
     // Adding the selected character to the result string and tracking it as used
     result += characters[index];
     usedChars.push(characters[index]);

@@ -5,14 +5,14 @@ import UserChatWithTimestamp from './user-timestamp';
 
 interface Props {
   chatHistory: any[];
-  selectedUser: any;
+  selectedConversation: any;
 }
 
 const ChatBody = (props: Props) => {
-  console.log(props.chatHistory[props.selectedUser.id]);
+  console.log(props.chatHistory[props.selectedConversation.id]);
   return (
     <div className='flex-1 flex flex-col gap-2 p-4 overflow-y-auto bg-white'>
-      {props.chatHistory[props.selectedUser.id].map(
+      {props.chatHistory[props.selectedConversation.id].map(
         (chatObject: any, index: number) => (
           <div key={index}>
             <UserChatWithTimestamp

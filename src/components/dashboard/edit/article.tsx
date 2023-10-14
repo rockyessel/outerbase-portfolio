@@ -4,7 +4,7 @@ import {
   decodeBase64ToObject,
   deserialize,
   encodeObjectToBase64,
-  getDataBySlug,
+  getArticleBySlug,
   updateArticle,
 } from '@/utils/api-request';
 import { getTextFromEditorContent } from '@/utils/function';
@@ -58,7 +58,7 @@ const EditArticlePage = (props: Props) => {
   console.log('editContent', editContent);
   const table = `public.${props.e}`;
   React.useEffect(() => {
-    getDataBySlug(table, `${props.slug}`).then((content) => {
+    getArticleBySlug(`${props.slug}`).then((content) => {
       if (content) {
         console.log('content content', content);
         const editContentData = content as any;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 const WritingPlatformDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<any[]>([]);
   const [platforms, setPlatforms] = useState([
     { name: 'Hashnode', value: 'hashnode', logo: '/hashnode.png' },
     { name: 'Dev.to', value: 'devto', logo: '/devto.png' },
@@ -19,10 +19,10 @@ const WritingPlatformDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handlePlatformSelect = (platform: any) => {
-    setSelectedPlatforms([...selectedPlatforms, platform]);
-    setIsOpen(false);
-  };
+    const handlePlatformSelect = (platform: any) => {
+      setSelectedPlatforms([...selectedPlatforms, platform]);
+      setIsOpen(false);
+    };
 
   const handlePlatformInputChange = (event: any, platform: any) => {
     const updatedInputs = [...platformInputs];
@@ -101,12 +101,16 @@ const WritingPlatformDropdown = () => {
           <input
             type='text'
             value={platformInputs[index] || ''}
+            required
+            name={selectedPlatform}
+            title={selectedPlatform}
+            placeholder={`Enter your ${selectedPlatform} URL`}
+            className='appearance-none block w-full py-1.5 pr-5 bg-transparent border border-rose-200 rounded-lg placeholder-gray-400/70 pl-4 rtl:pr-4 rtl:pl-5 focus:border-rose-400 focus:ring-rose-300 focus:outline-none focus:ring focus:ring-opacity-40'
             onChange={(event) =>
               handlePlatformInputChange(event, selectedPlatform)
             }
-            placeholder={`Enter your ${selectedPlatform} URL`}
-            className='w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200'
           />
+
           <button
             type='button'
             onClick={() => handleRemovePlatform(selectedPlatform)}

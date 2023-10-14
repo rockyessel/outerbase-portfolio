@@ -4,7 +4,7 @@ import { dummyChatHistory } from './index';
 import UserProfile from '../users/profile';
 
 interface Props {
-  setSelectedUser: React.Dispatch<any>;
+  setSelectedConversation: React.Dispatch<any>;
 }
 
 const ChatUsersList = (props: Props) => {
@@ -32,7 +32,7 @@ const ChatUsersList = (props: Props) => {
         <button
           title={user.name}
           type='button'
-          onClick={() => props.setSelectedUser(user)}
+          onClick={() => props.setSelectedConversation(user)}
           key={index}
           className='flex items-center gap-2 py-2.5'
         >

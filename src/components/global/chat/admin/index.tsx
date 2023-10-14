@@ -162,11 +162,13 @@ const dummyChatHistory = {
 
 const AdminChat = () => {
   const [minimize, setMinimize] = React.useState('450');
-  const [selectedUser, setSelectedUser] = React.useState<any>();
+  const [selectedConversation, setSelectedConversation] = React.useState<any>();
   const [chatHistory, setChatHistory] = React.useState<any>(dummyChatHistory);
   React.useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch('https://dummyjson.com/users');
+      const response = await fetch(
+        'https://minimum-aqua.cmd.outerbase.io/conversations'
+      );
 
       const data = await response.json();
       console.log(data);
@@ -177,24 +179,25 @@ const AdminChat = () => {
       .catch((error) => console.log(error));
   }, []);
 
-  console.log('selectedUser: ', selectedUser);
+  console.log('selectedConversation: ', selectedConversation);
 
   return (
     <div>
-      <ChatBox boxHeight={minimize}>
+      {/* <ChatBox boxHeight={minimize}>
         <ChatHead minimizeValue={minimize} setMinimizeValue={setMinimize} />
-        {selectedUser ? (
+        {selectedConversation ? (
           <React.Fragment>
-            <ChatBody selectedUser={selectedUser} chatHistory={chatHistory} />
+            <ChatBody selectedConversation={selectedConversation} chatHistory={chatHistory} />
             <ChatSendButton
-              handleContentChange={(event) => {}}
-              handleSendMessage={(event) => {}}
+              handleContentChange={() => {}}
+              handleSendMessage={() => {}}
             />
           </React.Fragment>
         ) : (
-          <ChatUsersList setSelectedUser={setSelectedUser} />
+          // <ChatUsersList setSelectedConversation={setSelectedConversation} /> 
+          <p> hello</p>
         )}
-      </ChatBox>
+      </ChatBox> */}
     </div>
   );
 };

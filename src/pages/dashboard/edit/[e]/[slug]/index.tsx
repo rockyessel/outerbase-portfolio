@@ -13,13 +13,10 @@ const EditContentPage = (props: InferGetServerSidePropsType<typeof getStaticProp
     case 'projects':
       
       return <EditProjectPage slug={props.slug} e={props.e} />;
-  
-    case 'shop':
       
-      return <EditProjectPage slug={props.slug} e={props.e} />;
-  
-    default:
-      break;
+      default:
+        return <EditProjectPage slug={props.slug} e={props.e} />;
+       
   }
 };
 

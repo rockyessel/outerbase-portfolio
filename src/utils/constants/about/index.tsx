@@ -1,3 +1,5 @@
+import devicons from '../../../../devicon.json';
+
 export const availableLanguages = [
   { name: 'JavaScript', value: 'javascript' },
   { name: 'Python', value: 'python' },
@@ -59,4 +61,85 @@ export const webDevelopmentFrameworks = [
   { name: 'ASP.NET', value: 'aspnet' },
   { name: '.NET Core', value: 'dotnetcore' },
   { name: 'Spring Framework', value: 'springframework' },
+];
+
+const frameworks = devicons.filter((frameworks) =>
+  frameworks.tags.includes('framework')
+);
+
+const structureFrameworks = frameworks.map((framework) => {
+  return {
+    name: framework.name.toUpperCase(),
+    value: framework.name,
+  };
+});
+console.log('frameworks: ', frameworks);
+
+const versionControls = devicons.filter((vc) =>
+  vc.tags.includes('version-control')
+);
+console.log('versionControls: ', versionControls);
+
+const structureVersionControls = versionControls.map((vc) => {
+  return {
+    name: vc.name.toUpperCase(),
+    value: vc.name,
+  };
+});
+
+const database = devicons.filter((db) => db.tags.includes('database'));
+console.log('database: ', database);
+
+const structureDatabase = database.map((db) => {
+  return {
+    name: db.name.toUpperCase(),
+    value: db.name,
+  };
+});
+
+const testers = devicons.filter((testing) => testing.tags.includes('testing'));
+console.log('testers: ', testers);
+
+const structureTesters = testers.map((testing) => {
+  return {
+    name: testing.name.toUpperCase(),
+    value: testing.name,
+  };
+});
+
+const library = devicons.filter((lib) => lib.tags.includes('testing'));
+console.log('testers: ', testers);
+
+const structureLibrary = library.map((lib) => {
+  return {
+    name: lib.name.toUpperCase(),
+    value: lib.name,
+  };
+});
+
+export const developerToolsAndTech = [
+  {
+    title: 'Programming Languages',
+    developerTools: availableLanguages,
+  },
+  {
+    title: 'Web Development Frameworks',
+    developerTools: structureFrameworks,
+  },
+  {
+    title: 'Version Control',
+    developerTools: structureVersionControls,
+  },
+  {
+    title: 'Database',
+    developerTools: structureDatabase,
+  },
+  {
+    title: 'Testing',
+    developerTools: structureTesters,
+  },
+  {
+    title: 'Library',
+    developerTools: structureLibrary,
+  },
 ];
